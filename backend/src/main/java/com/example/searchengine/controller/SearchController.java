@@ -4,12 +4,13 @@ import com.example.searchengine.model.SearchHistory;
 import com.example.searchengine.model.SearchRequest;
 import com.example.searchengine.service.SearchHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/search")
 public class SearchController {
@@ -23,20 +24,18 @@ public class SearchController {
         return ResponseEntity.ok(savedHistory);
     }
 
-    // Endpoint: GET /api/search/history/{userId}
+    // Endpoint: GET /search/history/{userId}
     @GetMapping("/history/{userId}")
     public ResponseEntity<List<String>> getHistory(@PathVariable Long userId) {
+        // Make sure the service returns List<SearchHistory> (NOT List<String>)
         List<SearchHistory> userHistory = searchHistoryService.getUserHistory(userId);
 
-        if (userHistory != null && !userHistory.isEmpty()) {
-            List<String> simplifiedHistory = userHistory.stream()
-                    .map(SearchHistory::getQuery)
-                    .toList();
+        // Convert SearchHistory list to list of query strings
+        List<String> simplifiedHistory = userHistory.stream()
+                .map(SearchHistory::getQuery)
+                .collect(Collectors.toList());
 
-            return ResponseEntity.ok(simplifiedHistory);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return ResponseEntity.ok(simplifiedHistory);
     }
 
     @GetMapping("/test")
@@ -44,7 +43,6 @@ public class SearchController {
         return ResponseEntity.ok("API is working!");
     }
 
-    // Endpoint: GET /api/search/
     @GetMapping("/")
     public ResponseEntity<String> home() {
         return ResponseEntity.ok("Welcome to the Search Engine API!");

@@ -1,5 +1,4 @@
-version: "3.8"
-
+version: '3.8'
 services:
   opensearch-node1:
     image: opensearchproject/opensearch:latest
@@ -7,7 +6,7 @@ services:
     environment:
       - cluster.name=opensearch-cluster
       - node.name=opensearch-node1
-      - discovery.type=single-node  # Crucial for single-node setup
+      - discovery.type=single-node
       - bootstrap.memory_lock=true
       - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=MyStrongPassword123!
@@ -17,5 +16,50 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
 
+  web:
+    build:
+      context: ./backend  # Adjusted for the backend
+      dockerfile: Dockerfile
+    container_name: searchengine_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+      - opensearch-node1
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/searchdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=mysecretpassword
+
+  angular:
+    build:
+      context: ./frontend  # Adjusted for the frontend
+      dockerfile: Dockerfile-angular
+    container_name: searchengine_angular
+    ports:
+      - "4200:80"
+
+  postgres-db:
+    image: postgres:latest
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: searchdb
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  newman:
+    build:
+      context: .  # Assuming Dockerfile for newman is in the root
+      dockerfile: Dockerfile
+    container_name: searchengine_newman
+    volumes:
+      - ./postman-tests:/etc/newman
+    entrypoint: [ "newman", "run", "/etc/newman/collection.json", "-e", "/etc/newman/environment.json" ]
+    depends_on:
+      - web
+
 volumes:
   opensearch-data1:
+  pg_data:

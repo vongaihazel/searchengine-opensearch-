@@ -1,0 +1,11 @@
+{
+    "id": "your-environment-id",
+    "name": "Search Engine API Environment",
+    "values": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8080",
+            "enabled": true
+        }
+    ]
+}
