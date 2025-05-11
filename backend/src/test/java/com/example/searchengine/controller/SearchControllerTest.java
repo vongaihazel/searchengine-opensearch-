@@ -1,5 +1,6 @@
 package com.example.searchengine.controller;
 
+// Import necessary classes for testing
 import com.example.searchengine.model.SearchHistory;
 import com.example.searchengine.model.User;
 import com.example.searchengine.service.SearchHistoryService;
@@ -16,23 +17,26 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+// Extend with Mockito for testing
 @ExtendWith(MockitoExtension.class)
 public class SearchControllerTest {
 
-    private MockMvc mockMvc;
+    private MockMvc mockMvc; // MockMvc instance for testing controller
 
     @Mock
-    private SearchHistoryService searchHistoryService;
+    private SearchHistoryService searchHistoryService; // Mocked service
 
     @InjectMocks
-    private SearchController searchController;
+    private SearchController searchController; // Controller to test
 
-    private User user;
+    private User user; // Test user object
 
     @BeforeEach
     public void setUp() {
+        // Set up MockMvc with the controller
         mockMvc = MockMvcBuilders.standaloneSetup(searchController).build();
 
+        // Initialize the test user
         user = new User();
         user.setId(1L);
         user.setUsername("testUser");
@@ -40,16 +44,19 @@ public class SearchControllerTest {
 
     @Test
     public void testSaveQuery() throws Exception {
+        // Create a SearchHistory object to be returned by the mocked service
         SearchHistory savedHistory = new SearchHistory();
         savedHistory.setId(1L);
         savedHistory.setUser(user);
         savedHistory.setQuery("test query");
 
+        // Mock the service's saveQuery method
         when(searchHistoryService.saveQuery(1L, "test query")).thenReturn(savedHistory);
 
+        // Perform a POST request and check the response status
         mockMvc.perform(post("/search/query")
                         .param("userId", "1")
                         .param("query", "test query"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()); // Expect HTTP 200 OK
     }
 }

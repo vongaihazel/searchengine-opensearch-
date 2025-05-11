@@ -1,65 +1,66 @@
-version: '3.8'
+version: '3.8'  # Specify the version of Docker Compose
+
 services:
   opensearch-node1:
-    image: opensearchproject/opensearch:latest
-    container_name: opensearch-node1
+    image: opensearchproject/opensearch:latest  # Use the latest OpenSearch image
+    container_name: opensearch-node1  # Name for the OpenSearch container
     environment:
-      - cluster.name=opensearch-cluster
-      - node.name=opensearch-node1
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=MyStrongPassword123!
+      - cluster.name=opensearch-cluster  # Set the cluster name
+      - node.name=opensearch-node1  # Name for the node
+      - discovery.type=single-node  # Run as a single node
+      - bootstrap.memory_lock=true  # Enable memory locking
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m  # Set Java memory options
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=MyStrongPassword123!  # Set initial admin password
     ports:
-      - "9200:9200"
-      - "9600:9600"
+      - "9200:9200"  # Expose port 9200 for OpenSearch
+      - "9600:9600"  # Expose port 9600 for OpenSearch monitoring
     volumes:
-      - opensearch-data1:/usr/share/opensearch/data
+      - opensearch-data1:/usr/share/opensearch/data  # Persist OpenSearch data
 
   web:
     build:
-      context: ./backend  # Adjusted for the backend
-      dockerfile: Dockerfile
-    container_name: searchengine_app
+      context: ./backend  # Adjusted for the backend service
+      dockerfile: Dockerfile  # Dockerfile for backend
+    container_name: searchengine_app  # Name for the backend container
     ports:
-      - "8080:8080"
+      - "8080:8080"  # Expose port 8080 for the backend
     depends_on:
-      - postgres-db
-      - opensearch-node1
+      - postgres-db  # Wait for PostgreSQL to start
+      - opensearch-node1  # Wait for OpenSearch to start
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/searchdb
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=mysecretpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/searchdb  # PostgreSQL connection URL
+      - SPRING_DATASOURCE_USERNAME=postgres  # PostgreSQL username
+      - SPRING_DATASOURCE_PASSWORD=mysecretpassword  # PostgreSQL password
 
   angular:
     build:
-      context: ./frontend  # Adjusted for the frontend
-      dockerfile: Dockerfile-angular
-    container_name: searchengine_angular
+      context: ./frontend  # Adjusted for the frontend service
+      dockerfile: Dockerfile-angular  # Dockerfile for Angular app
+    container_name: searchengine_angular  # Name for the Angular container
     ports:
-      - "4200:80"
+      - "4200:80"  # Expose port 80 for the Angular app
 
   postgres-db:
-    image: postgres:latest
-    container_name: my_postgres
+    image: postgres:latest  # Use the latest PostgreSQL image
+    container_name: my_postgres  # Name for the PostgreSQL container
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: searchdb
+      POSTGRES_USER: postgres  # PostgreSQL username
+      POSTGRES_PASSWORD: mysecretpassword  # PostgreSQL password
+      POSTGRES_DB: searchdb  # Name of the database to create
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data  # Persist PostgreSQL data
 
   newman:
     build:
-      context: .  # Assuming Dockerfile for newman is in the root
-      dockerfile: Dockerfile
-    container_name: searchengine_newman
+      context: .  # Assuming Dockerfile for Newman is in the root
+      dockerfile: Dockerfile  # Dockerfile for Newman
+    container_name: searchengine_newman  # Name for the Newman container
     volumes:
-      - ./postman-tests:/etc/newman
-    entrypoint: [ "newman", "run", "/etc/newman/collection.json", "-e", "/etc/newman/environment.json" ]
+      - ./postman-tests:/etc/newman  # Mount Postman tests
+    entrypoint: [ "newman", "run", "/etc/newman/collection.json", "-e", "/etc/newman/environment.json" ]  # Run Newman tests
     depends_on:
-      - web
+      - web  # Wait for the web service to start
 
 volumes:
-  opensearch-data1:
-  pg_data:
+  opensearch-data1:  # Volume for OpenSearch data
+  pg_data:  # Volume for PostgreSQL data

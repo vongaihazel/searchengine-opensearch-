@@ -1,23 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SearchComponent } from './search.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing'; // Import necessary testing utilities
+import { SearchComponent } from './search.component'; // Import the component to be tested
 
 describe('SearchComponent', () => {
-  let component: SearchComponent;
-  let fixture: ComponentFixture<SearchComponent>;
+  let component: SearchComponent; // Declare the component variable
+  let fixture: ComponentFixture<SearchComponent>; // Declare the fixture variable
 
   beforeEach(async () => {
+    // Configure the testing module
     await TestBed.configureTestingModule({
-      imports: [SearchComponent]
+      imports: [SearchComponent] // Import the component
     })
-      .compileComponents();
+      .compileComponents(); // Compile the component templates
 
+    // Create the component fixture
     fixture = TestBed.createComponent(SearchComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component = fixture.componentInstance; // Get the component instance
+    fixture.detectChanges(); // Trigger change detection
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBeTruthy(); // Check if the component is created successfully
   });
 });

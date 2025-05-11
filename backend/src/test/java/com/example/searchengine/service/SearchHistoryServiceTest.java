@@ -1,5 +1,6 @@
 package com.example.searchengine.service;
 
+// Import necessary classes for testing
 import com.example.searchengine.model.SearchHistory;
 import com.example.searchengine.model.User;
 import com.example.searchengine.repository.SearchHistoryRepository;
@@ -16,22 +17,24 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Extend with Mockito for testing
 @ExtendWith(MockitoExtension.class)
 public class SearchHistoryServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepository userRepository; // Mocked user repository
 
     @Mock
-    private SearchHistoryRepository searchHistoryRepository;
+    private SearchHistoryRepository searchHistoryRepository; // Mocked search history repository
 
     @InjectMocks
-    private SearchHistoryService searchHistoryService;
+    private SearchHistoryService searchHistoryService; // Service under test
 
-    private User user;
+    private User user; // Test user object
 
     @BeforeEach
     public void setUp() {
+        // Initialize the test user before each test
         user = new User();
         user.setId(1L);
         user.setUsername("testuser");
@@ -39,15 +42,19 @@ public class SearchHistoryServiceTest {
 
     @Test
     public void testInsertQuery() {
+        // Stub the user repository to return the test user
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
 
+        // Call the method under test
         searchHistoryService.saveQuery(user.getId(), "example query");
 
+        // Verify that the save method was called once on the repository
         verify(searchHistoryRepository, times(1)).save(any(SearchHistory.class));
     }
 
     @Test
     public void testGetUserHistory() {
+        // Create a new SearchHistory object
         SearchHistory history = new SearchHistory();
         history.setUser(user);
         history.setQuery("example query");
@@ -58,11 +65,11 @@ public class SearchHistoryServiceTest {
         // Call the method under test
         List<SearchHistory> histories = searchHistoryService.getUserHistory(1L);
 
-        // Assert the results
-        assertThat(histories).hasSize(1);
-        assertThat(histories.get(0).getQuery()).isEqualTo("example query");
+        // Assertions to verify the results
+        assertThat(histories).hasSize(1); // Check the size of history
+        assertThat(histories.get(0).getQuery()).isEqualTo("example query"); // Check the query value
 
-        // Verify that the search history repository method was called
+        // Verify that the findByUserId method was called once on the repository
         verify(searchHistoryRepository, times(1)).findByUserId(1L);
     }
 }
