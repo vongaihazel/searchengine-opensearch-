@@ -1,5 +1,5 @@
 <div class="search-container">
-  <!-- Add label for accessibility -->
+  <!-- Accessibility label for the search input -->
   <label for="searchInput" class="sr-only">Search</label>
   <input
     id="searchInput"
@@ -22,14 +22,12 @@
         href="javascript:void(0);"
       >{{ history }}</a>
 
-      <!-- Handle empty search history message -->
       <div *ngIf="isHistoryEmpty" class="dropdown-item">
         No search history yet.
       </div>
     </div>
   </div>
 
-  <!-- Display search results if any -->
   <div *ngIf="results.length > 0" class="results-container">
     <h3>Results:</h3>
     <ul>

@@ -1,6 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'; // Import core Angular functionalities
 import { provideRouter } from '@angular/router'; // Import router provider
-
 import { routes } from './app.routes'; // Import application routes
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser'; // Import client hydration utilities
 import { provideHttpClient, withFetch } from '@angular/common/http'; // Import HTTP client provider

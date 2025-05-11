@@ -1,71 +1,69 @@
-import { Component, OnInit } from '@angular/core'; // Import necessary Angular core modules
-import { HttpClient } from '@angular/common/http'; // Import HttpClient for HTTP requests
-import { FormsModule } from '@angular/forms'; // Import FormsModule for template-driven forms
-import { CommonModule } from '@angular/common'; // Import CommonModule for common directives
-import { environment } from 'src/environments/environment'; // Import environment variables
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { environment } from 'src/environments/environment';
 
 // Define the User interface
 export interface User {
-  id: number; // User ID
-  username: string; // Username
+  id: number;
+  username: string;
 }
 
 @Component({
-  selector: 'app-search', // Component selector
-  standalone: true, // Standalone component
-  templateUrl: './search.component.html', // Template URL
-  styleUrls: ['./search.component.scss'], // Stylesheet URLs
-  imports: [CommonModule, FormsModule], // Modules to import
+  selector: 'app-search',
+  standalone: true,
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss'],
+  imports: [CommonModule, FormsModule],
 })
 export class SearchComponent implements OnInit {
-  query: string = ''; // Search query
-  userId: number = 1; // Default user ID
-  searchHistory: string[] = []; // Array to store search history
-  results: User[] = []; // Array to store search results
-  isHistoryVisible: boolean = false; // Flag for history visibility
-  isHistoryEmpty: boolean = false; // Flag for empty history
+  query: string = '';
+  userId: number = 1;
+  searchHistory: string[] = [];
+  results: User[] = [];
+  isHistoryVisible: boolean = false;
+  isHistoryEmpty: boolean = false;
 
-  constructor(private http: HttpClient) {} // Inject HttpClient
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.getSearchHistory(); // Fetch search history on initialization
+    this.getSearchHistory();
   }
 
   search(): void {
-    // Make a POST request to the search API
     this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query: this.query })
       .subscribe({
         next: (response) => {
-          this.results = response; // Store the search results
-          this.getSearchHistory(); // Update search history
+          this.results = response;
+          this.getSearchHistory();
         },
         error: (error) => {
-          console.error('Error during search', error); // Log any errors
+          console.error('Error during search', error);
         }
       });
   }
 
   getSearchHistory(): void {
-    // Make a GET request to fetch search history
     this.http.get<string[]>(`${environment.apiUrl}/history/${this.userId}`)
       .subscribe({
         next: (history) => {
-          this.searchHistory = history; // Store the fetched history
-          this.isHistoryEmpty = history.length === 0; // Check if history is empty
+          this.searchHistory = history;
+          this.isHistoryEmpty = history.length === 0;
         },
         error: (error) => {
-          console.error('Error fetching search history', error); // Log any errors
+          console.error('Error fetching search history', error);
         }
       });
   }
 
   useHistory(historyItem: string): void {
-    this.query = historyItem; // Set the query to the selected history item
-    this.search(); // Perform search
-    this.isHistoryVisible = false; // Hide history dropdown
+    this.query = historyItem;
+    this.search();
+    this.isHistoryVisible = false;
   }
 
   toggleHistory(): void {
-    this.isHistoryVisible = !this.isHistoryVisible; // Toggle visibility of search history
+    this.isHistoryVisible = !this.isHistoryVisible;
   }
 }
