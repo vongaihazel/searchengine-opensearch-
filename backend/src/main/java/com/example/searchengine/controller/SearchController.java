@@ -1,9 +1,12 @@
 package com.example.searchengine.controller;
 
-// Import necessary Spring annotations and classes
 import com.example.searchengine.model.SearchHistory;
 import com.example.searchengine.model.SearchRequest;
 import com.example.searchengine.service.SearchHistoryService;
+import com.example.searchengine.service.OpenSearchService; // <-- NEW IMPORT
+import org.opensearch.action.search.SearchResponse; // <-- NEW IMPORT
+import org.opensearch.search.SearchHit; // <-- NEW IMPORT
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,51 +14,71 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Allow CORS requests from the specified origin
 @CrossOrigin(origins = "http://localhost:4200")
-// Mark this class as a REST controller
 @RestController
-// Define the base URL for this controller
 @RequestMapping("/search")
 public class SearchController {
 
-    // Inject the SearchHistoryService dependency
     @Autowired
     private SearchHistoryService searchHistoryService;
 
-    // Endpoint to save a search query
+    @Autowired // <-- NEW INJECTION
+    private OpenSearchService openSearchService;
+
+    // Endpoint to save a search query AND run OpenSearch query
     @PostMapping("/query")
-    public ResponseEntity<SearchHistory> saveQuery(@RequestBody SearchRequest searchRequest) {
-        // Save the query and retrieve the saved SearchHistory object
+    public ResponseEntity<?> searchAndSave(@RequestBody SearchRequest searchRequest) {
+        // Save the query to search history (same as before)
         SearchHistory savedHistory = searchHistoryService.saveQuery(searchRequest.getUserId(), searchRequest.getQuery());
-        // Return the saved history in the response
-        return ResponseEntity.ok(savedHistory);
+
+        try {
+            // Run OpenSearch query (NEW)
+            SearchResponse searchResponse = openSearchService.search(searchRequest.getQuery());
+
+            // Extract hits as JSON strings (simpler for frontend)
+            List<String> hits = List.of(searchResponse.getHits().getHits())
+                    .stream()
+                    .map(SearchHit::getSourceAsString)
+                    .collect(Collectors.toList());
+
+            // Return both history + hits in one response (optional but nice!)
+            return ResponseEntity.ok(new SearchResultResponse(savedHistory, hits));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("OpenSearch error: " + e.getMessage());
+        }
     }
 
     // Endpoint to get the search history for a specific user
     @GetMapping("/history/{userId}")
     public ResponseEntity<List<String>> getHistory(@PathVariable Long userId) {
-        // Retrieve the user's search history from the service
         List<SearchHistory> userHistory = searchHistoryService.getUserHistory(userId);
 
-        // Convert the list of SearchHistory objects to a list of query strings
         List<String> simplifiedHistory = userHistory.stream()
                 .map(SearchHistory::getQuery)
                 .collect(Collectors.toList());
 
-        // Return the simplified history in the response
         return ResponseEntity.ok(simplifiedHistory);
     }
 
-    // Test endpoint to check if the API is working
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("API is working!");
     }
 
-    // Default endpoint to welcome users to the API
     @GetMapping("/")
     public ResponseEntity<String> home() {
         return ResponseEntity.ok("Welcome to the Search Engine API!");
+    }
+
+    // NEW Inner static class for clean combined response
+    public static class SearchResultResponse {
+        public SearchHistory savedHistory;
+        public List<String> openSearchResults;
+
+        public SearchResultResponse(SearchHistory savedHistory, List<String> openSearchResults) {
+            this.savedHistory = savedHistory;
+            this.openSearchResults = openSearchResults;
+        }
     }
 }
