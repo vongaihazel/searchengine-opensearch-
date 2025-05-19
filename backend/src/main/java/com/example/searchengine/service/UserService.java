@@ -1,62 +1,59 @@
 package com.example.searchengine.service;
 
-// Import necessary classes and annotations
-import com.example.searchengine.model.User;
-import com.example.searchengine.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.searchengine.entity.User;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
-import java.util.stream.Collectors;
 
-// Mark this class as a service component
-@Service
-public class UserService {
+/**
+ * Service interface for managing user-related operations.
+ */
+public interface UserService {
 
-    // Inject the UserRepository dependency
-    @Autowired
-    private UserRepository userRepository;
+    /**
+     * Creates and saves a new user.
+     *
+     * @param user the {@link User} entity to be created
+     * @return the saved {@link User}
+     */
+    User createUser(User user);
 
-    // Inject the EntityManager for JPA operations
-    @PersistenceContext
-    private EntityManager entityManager;
+    /**
+     * Retrieves all users from the system.
+     *
+     * @return a list of all {@link User} entities
+     */
+    List<User> getAllUsers();
 
-    // Method to create a new user
-    public User createUser(User user) {
-        return userRepository.save(user); // Save and return the new user
-    }
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param id the ID of the user
+     * @return the {@link User} with the given ID
+     * @throws RuntimeException if the user is not found
+     */
+    User getUserById(Long id);
 
-    // Method to retrieve all users
-    public List<User> getAllUsers() {
-        return userRepository.findAll(); // Return the list of users
-    }
+    /**
+     * Updates an existing user's information.
+     *
+     * @param id the ID of the user to update
+     * @param user the updated {@link User} object
+     * @return the updated {@link User}
+     * @throws RuntimeException if the user is not found
+     */
+    User updateUser(Long id, User user);
 
-    // Method to retrieve a user by ID
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found")); // Throw exception if user not found
-    }
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id the ID of the user to delete
+     */
+    void deleteUser(Long id);
 
-    // Method to update an existing user
-    public User updateUser(Long id, User user) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found")); // Throw exception if user not found
-        existingUser.setUsername(user.getUsername()); // Update the username
-        // Update other fields from User if necessary
-        return userRepository.save(existingUser); // Save and return the updated user
-    }
-
-    // Method to delete a user by ID
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id); // Delete the user
-    }
-
-    // New method to fetch users with search history
-    public List<User> findAllUsersWithSearchHistory() {
-        // JPQL query to fetch users along with their search history
-        String jpql = "SELECT u FROM User u LEFT JOIN FETCH u.searchHistory";
-        return entityManager.createQuery(jpql, User.class).getResultList(); // Execute the query and return results
-    }
+    /**
+     * Finds all users along with their search history records.
+     *
+     * @return a list of {@link User} entities that include search history
+     */
+    List<User> findAllUsersWithSearchHistory();
 }

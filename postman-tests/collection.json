@@ -2,37 +2,32 @@
 	"info": {
 		"_postman_id": "08089adc-ad4b-417e-ac3f-a9c826d59603",
 		"name": "Search Engine API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43805389",
-		"_collection_link": "https://vongaimazorodze.postman.co/workspace/Vongai-Mazorodze's-Workspace~844dca2b-a628-46f5-89ab-a9d26ac16a99/collection/43805389-08089adc-ad4b-417e-ac3f-a9c826d59603?action=share&source=collection_link&creator=43805389"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Save Search Query",
 			"request": {
 				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/search/query?userId=1&query=first search query",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"search",
-						"query"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "1"
-						},
-						{
-							"key": "query",
-							"value": "first search query"
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": 1,\n  \"query\": \"first search query\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
-					]
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/search/query",
+					"host": ["{{baseUrl}}"],
+					"path": ["search", "query"]
 				}
 			},
 			"response": []
@@ -43,17 +38,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/search/history/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"search",
-						"history",
-						"1"
-					]
+					"raw": "{{baseUrl}}/search/history/1",
+					"host": ["{{baseUrl}}"],
+					"path": ["search", "history", "1"]
 				}
 			},
 			"response": []
@@ -64,16 +51,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/search/test",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"search",
-						"test"
-					]
+					"raw": "{{baseUrl}}/search/test",
+					"host": ["{{baseUrl}}"],
+					"path": ["search", "test"]
 				}
 			},
 			"response": []
@@ -84,16 +64,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/search/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"search",
-						""
-					]
+					"raw": "{{baseUrl}}/search",
+					"host": ["{{baseUrl}}"],
+					"path": ["search"]
 				}
 			},
 			"response": []
@@ -104,15 +77,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/users",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users"
-					]
+					"raw": "{{baseUrl}}/users",
+					"host": ["{{baseUrl}}"],
+					"path": ["users"]
 				}
 			},
 			"response": []
@@ -121,10 +88,15 @@
 			"name": "Create New User",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"username\": \"newUser\"\r\n}",
+					"raw": "{\n  \"username\": \"newUser\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -132,15 +104,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users"
-					]
+					"raw": "{{baseUrl}}/users",
+					"host": ["{{baseUrl}}"],
+					"path": ["users"]
 				}
 			},
 			"response": []
@@ -151,16 +117,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/users/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"1"
-					]
+					"raw": "{{baseUrl}}/users/1",
+					"host": ["{{baseUrl}}"],
+					"path": ["users", "1"]
 				}
 			},
 			"response": []
@@ -169,10 +128,15 @@
 			"name": "Update User",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"username\": \"updatedUser\"\r\n}",
+					"raw": "{\n  \"username\": \"updatedUser\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -180,16 +144,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/3",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"3"
-					]
+					"raw": "{{baseUrl}}/users/1",
+					"host": ["{{baseUrl}}"],
+					"path": ["users", "1"]
 				}
 			},
 			"response": []

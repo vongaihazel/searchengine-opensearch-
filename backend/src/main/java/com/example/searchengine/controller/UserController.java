@@ -1,70 +1,99 @@
 package com.example.searchengine.controller;
 
-// Import necessary Spring annotations and classes
-import com.example.searchengine.model.User;
-import com.example.searchengine.service.UserService;
+import com.example.searchengine.entity.User;
+import com.example.searchengine.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Mark this class as a REST controller
+/**
+ * REST controller for managing user-related operations such as creating, retrieving,
+ * updating, and deleting users, as well as listing users with search history.
+ */
 @RestController
-// Define the base URL for this controller
 @RequestMapping("/users")
 public class UserController {
 
-    // Declare the UserService dependency
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    // Constructor injection for UserService
+    /**
+     * Constructor for injecting the user service implementation.
+     *
+     * @param userService the user service to be injected
+     */
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
-    // Endpoint to retrieve all users
+    /**
+     * Retrieves a list of all users.
+     *
+     * @return a list of all {@link User} entities
+     */
     @GetMapping
     public List<User> getAllUsers() {
-        return userService.getAllUsers(); // Return the list of users
+        return userService.getAllUsers();
     }
 
-    // Endpoint to create a new user
+    /**
+     * Creates a new user.
+     *
+     * @param user the user entity to create
+     * @return the saved {@link User} entity with HTTP 201 Created status
+     */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        // Save the user and retrieve the saved User object
         User savedUser = userService.createUser(user);
-        // Return the saved user with a 201 Created status
         return ResponseEntity.status(201).body(savedUser);
     }
 
-    // Endpoint to retrieve a user by their ID
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param id the ID of the user to retrieve
+     * @return the {@link User} entity wrapped in a {@link ResponseEntity}
+     */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        // Get the user by ID and return in the response
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
-    // Endpoint to retrieve users who have search history
+    /**
+     * Retrieves all users who have at least one search history entry.
+     *
+     * @return a list of {@link User} entities with search history
+     */
     @GetMapping("/search-history")
     public List<User> getUsersWithSearchHistory() {
-        return userService.findAllUsersWithSearchHistory(); // Return users with search history
+        return userService.findAllUsersWithSearchHistory();
     }
 
-    // Endpoint to update an existing user
+    /**
+     * Updates an existing user.
+     *
+     * @param id   the ID of the user to update
+     * @param user the updated user data
+     * @return the updated {@link User} entity wrapped in a {@link ResponseEntity}
+     */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        // Update the user and return the updated User object
         User updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
     }
 
-    // Endpoint to delete a user by their ID
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id the ID of the user to delete
+     * @return a {@link ResponseEntity} with HTTP 204 No Content status
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id); // Delete the user
-        return ResponseEntity.noContent().build(); // Return 204 No Content status
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

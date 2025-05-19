@@ -1,9 +1,9 @@
 package com.example.searchengine.controller;
 
 // Import necessary classes for testing
-import com.example.searchengine.model.SearchHistory;
-import com.example.searchengine.model.User;
-import com.example.searchengine.service.SearchHistoryService;
+import com.example.searchengine.entity.SearchHistory;
+import com.example.searchengine.entity.User;
+import com.example.searchengine.service.impl.SearchHistoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ public class SearchControllerTest {
     private MockMvc mockMvc; // MockMvc instance for testing controller
 
     @Mock
-    private SearchHistoryService searchHistoryService; // Mocked service
+    private SearchHistoryServiceImpl searchHistoryServiceImpl; // Mocked service
 
     @InjectMocks
     private SearchController searchController; // Controller to test
@@ -51,7 +51,7 @@ public class SearchControllerTest {
         savedHistory.setQuery("test query");
 
         // Mock the service's saveQuery method
-        when(searchHistoryService.saveQuery(1L, "test query")).thenReturn(savedHistory);
+        when(searchHistoryServiceImpl.saveQuery(1L, "test query")).thenReturn(savedHistory);
 
         // Perform a POST request and check the response status
         mockMvc.perform(post("/search/query")

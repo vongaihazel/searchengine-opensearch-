@@ -1,8 +1,8 @@
 package com.example.searchengine.controller;
 
 // Import necessary classes for testing
-import com.example.searchengine.model.User;
-import com.example.searchengine.service.UserService;
+import com.example.searchengine.entity.User;
+import com.example.searchengine.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,7 +28,7 @@ public class UserControllerTest {
     private MockMvc mockMvc; // MockMvc instance for testing controller
 
     @Mock
-    private UserService userService; // Mocked user service
+    private UserServiceImpl userService; // Mocked user service
 
     @InjectMocks
     private UserController userController; // Controller to test

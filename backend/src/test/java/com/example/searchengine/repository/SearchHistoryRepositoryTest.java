@@ -1,8 +1,8 @@
 package com.example.searchengine.repository;
 
 // Import necessary classes for testing
-import com.example.searchengine.model.SearchHistory;
-import com.example.searchengine.model.User;
+import com.example.searchengine.entity.SearchHistory;
+import com.example.searchengine.entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

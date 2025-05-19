@@ -1,0 +1,17 @@
+FROM debian:bullseye-slim
+
+RUN apt-get update && \
+    apt-get install -y curl tar && \
+    rm -rf /var/lib/apt/lists/*
+
+# Correct binary name is postman-cli now
+RUN curl -L https://dl-cli.pstmn.io/download/latest/linux64 -o postman-cli.tar.gz && \
+    mkdir -p /opt/postman-cli && \
+    tar -xzf postman-cli.tar.gz -C /opt/postman-cli && \
+    echo "🗂 Contents after extraction:" && ls -R /opt/postman-cli && \
+    chmod +x /opt/postman-cli/postman-cli && \
+    ln -s /opt/postman-cli/postman-cli /usr/local/bin/postman && \
+    rm postman-cli.tar.gz
+
+WORKDIR /tests
+COPY ./postman-tests ./postman-tests

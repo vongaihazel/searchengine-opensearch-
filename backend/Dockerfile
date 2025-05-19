@@ -1,11 +1,24 @@
-# Use the OpenJDK 11 slim image as the base image
-FROM openjdk:11-jre-slim
+# ---------- Stage 1: Build ----------
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy only the necessary files to the container
-COPY target/backend.jar app.jar
+# Copy the entire backend project
+COPY . .
 
-# Set the entry point for the container to run the Java application
+# Build the application (skip tests to speed it up)
+RUN mvn clean install -DskipTests
+
+
+# ---------- Stage 2: Runtime ----------
+FROM openjdk:17-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy the JAR from the previous build stage
+COPY --from=build /app/target/searchengine-0.0.1-SNAPSHOT.jar app.jar
+
+# Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
