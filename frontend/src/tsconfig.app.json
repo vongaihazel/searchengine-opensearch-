@@ -10,7 +10,7 @@
     "main.ts",
     "main.server.ts",
     "server.ts",
-    "src/polyfills.ts"
+    "polyfills.ts"
   ],
   "include": [
     "**/*.d.ts"

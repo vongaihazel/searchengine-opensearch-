@@ -10,23 +10,23 @@
         }
       },
       "root": "",
-      "sourceRoot": "src/main/frontend",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/searchengine/browser",
-            "index": "src/main/frontend/index.html",
-            "main": "src/main/frontend/main.ts",
-            "polyfills": "src/main/frontend/polyfills.ts",
-            "tsConfig": "src/main/frontend/tsconfig.app.json",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/main/frontend/public"
+              "src/public"
             ],
             "styles": [
-              "src/main/frontend/styles.scss",
+              "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": []

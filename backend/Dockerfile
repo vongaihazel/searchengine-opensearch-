@@ -15,7 +15,7 @@ RUN mvn clean install -DskipTests
 FROM openjdk:17-jdk-slim
 
 # Set working directory
-WORKDIR /app
+WORKDIR /ap
 
 # Copy the JAR from the previous build stage
 COPY --from=build /app/target/searchengine-0.0.1-SNAPSHOT.jar app.jar
