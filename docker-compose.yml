@@ -68,6 +68,8 @@ services:
     container_name: searchengine_angular
     ports:
       - "4200:80"
+    depends_on:
+      - web
 
   postman:
     build:

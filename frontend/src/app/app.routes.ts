@@ -1,7 +1,10 @@
-import { Routes } from '@angular/router'; // Import Routes type for defining routes
-import { SearchComponent } from './search/search.component'; // Import the SearchComponent
+import { Routes } from '@angular/router';
+import { SearchComponent } from './search/search.component';
+import { UserCreateComponent } from './user-create/user-create.component';
 
-// Define application routes
 export const routes: Routes = [
-  { path: '', component: SearchComponent }, // Default route that loads the SearchComponent
+  { path: '', redirectTo: 'search', pathMatch: 'full' },
+  { path: 'search', component: SearchComponent },
+  { path: 'create-user', component: UserCreateComponent },
+  { path: '**', redirectTo: 'search' }
 ];

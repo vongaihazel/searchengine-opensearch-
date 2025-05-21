@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Entity representing a user of the search engine system.
  * <p>
- * Each user has a unique ID, a username, and an associated list of search history entries.
+ * Each user has a unique ID, a username, an email, and an associated list of search history entries.
  * </p>
  */
 @Entity
@@ -20,6 +20,9 @@ public class User {
 
     /** The username of the user. */
     private String username;
+
+    /** The email address of the user. */
+    private String email;
 
     /**
      * The list of search history entries associated with this user.
@@ -62,6 +65,24 @@ public class User {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * Gets the email address of the user.
+     *
+     * @return the user's email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the email address of the user.
+     *
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**

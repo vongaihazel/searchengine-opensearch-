@@ -1,5 +1,6 @@
 package com.example.searchengine.service.impl;
 
+import com.example.searchengine.dto.UserDTO;
 import com.example.searchengine.entity.User;
 import com.example.searchengine.repository.UserRepository;
 import com.example.searchengine.service.UserService;
@@ -16,15 +17,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    /**
-     * Repository for user data operations.
-     */
+    /** Repository for user data operations. */
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * EntityManager for executing custom JPQL queries.
-     */
+    /** EntityManager for executing custom JPQL queries. */
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -63,9 +60,9 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Updates an existing user’s information.
+     * Updates an existing user's information.
      *
-     * @param id the ID of the user to update
+     * @param id   the ID of the user to update
      * @param user the new user data
      * @return the updated {@link User}
      * @throws RuntimeException if the user is not found
@@ -97,5 +94,33 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllUsersWithSearchHistory() {
         String jpql = "SELECT u FROM User u LEFT JOIN FETCH u.searchHistory";
         return entityManager.createQuery(jpql, User.class).getResultList();
+    }
+
+    // These methods are helper utilities. They could be moved to a mapper or service layer if needed.
+
+    /**
+     * Converts a {@link User} entity to a {@link UserDTO}.
+     *
+     * @param user the user entity
+     * @return the corresponding UserDTO
+     */
+    private UserDTO convertToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        return dto;
+    }
+
+    /**
+     * Converts a {@link UserDTO} to a {@link User} entity.
+     *
+     * @param dto the user DTO
+     * @return the corresponding User entity
+     */
+    private User convertToEntity(UserDTO dto) {
+        User user = new User();
+        user.setId(dto.getId()); // Optional: needed if updating
+        user.setUsername(dto.getUsername());
+        return user;
     }
 }

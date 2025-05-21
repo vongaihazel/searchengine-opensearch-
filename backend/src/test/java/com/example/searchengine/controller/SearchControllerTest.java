@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -53,10 +54,13 @@ public class SearchControllerTest {
         // Mock the service's saveQuery method
         when(searchHistoryServiceImpl.saveQuery(1L, "test query")).thenReturn(savedHistory);
 
-        // Perform a POST request and check the response status
+        // Create a JSON string for the SearchRequest
+        String searchRequestJson = "{\"userId\": 1, \"query\": \"test query\"}";
+
+        // Perform a POST request with the JSON body
         mockMvc.perform(post("/search/query")
-                        .param("userId", "1")
-                        .param("query", "test query"))
+                        .contentType(MediaType.APPLICATION_JSON) // Set content type to JSON
+                        .content(searchRequestJson)) // Send JSON request body
                 .andExpect(status().isOk()); // Expect HTTP 200 OK
     }
 }
