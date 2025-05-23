@@ -1,0 +1,14 @@
+<form (ngSubmit)="signIn()" #signInForm="ngForm" class="sign-in-form">
+  <label for="username">Username:</label>
+  <input
+    id="username"
+    [(ngModel)]="username"
+    name="username"
+    required
+    class="input"
+  />
+  <br />
+  <button type="submit" [disabled]="!signInForm.form.valid" class="button">
+    Sign In
+  </button>
+</form>

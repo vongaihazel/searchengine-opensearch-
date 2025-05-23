@@ -1,0 +1,7 @@
+<p>search-results works!</p>
+<div class="results-container" *ngIf="results.length > 0">
+  <h3>Results:</h3>
+  <ul>
+    <li *ngFor="let user of results">{{ user.username }}</li>
+  </ul>
+</div>

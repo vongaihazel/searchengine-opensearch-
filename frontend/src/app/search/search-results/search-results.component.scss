@@ -1,0 +1,24 @@
+.results-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  width: 100%;
+  max-width: 600px;
+}
+
+.results-container h3 {
+  color: var(--gray-900);
+  margin-bottom: 1rem;
+}
+
+.results-container ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.results-container li {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+}

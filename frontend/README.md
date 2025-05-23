@@ -1,59 +1,122 @@
-# Searchengine
+# Angular Frontend – Searchengine
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+This project is a frontend Angular application built with a modular component structure and scalable SCSS architecture.
 
-## Development server
+It was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
 
-To start a local development server, run:
+---
+
+## 📦 Prerequisites
+
+Make sure these are installed before working with the frontend:
+
+| Tool          | Version | Install Command / Link                               |
+|---------------|---------|--------------------------------------------------------|
+| Node.js + npm | 18+     | [Node.js LTS](https://nodejs.org/)                    |
+| Angular CLI   | Latest  | `npm install -g @angular/cli`                         |
+
+---
+
+## 🚀 Development Server
+
+Start a local Angular dev server with:
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+Visit the app at:
+```
+http://localhost:4200/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
+## 📁 Project Structure
+
+```
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── app.component.*
+│   │   ├── sign-in/
+│   │   ├── user-create/
+│   │   └── search/
+│   │       ├── search-input/
+│   │       ├── search-results/
+│   │       └── search-history/
+│   └── styles/
+│       ├── _variables.scss
+│       ├── _globals.scss
+│       ├── _mixins.scss
+│       └── main.scss
+```
+
+- Each component has its own `.html`, `.scss`, and `.ts`
+- Global SCSS is organized into reusable variables and mixins
+- Uses standalone components for modular design
+
+---
+
+## ⚙️ Code Scaffolding
+
+Generate a new standalone component:
+```bash
+ng generate component component-name --standalone --style=scss
+```
+
+See all options:
 ```bash
 ng generate --help
 ```
 
-## Building
+---
 
-To build the project run:
+## 🛠️ Building
 
+To compile the application locally:
 ```bash
 ng build
 ```
+Output goes to:
+```
+dist/searchengine/browser/
+```
+> This folder is used in Docker builds to serve content with Nginx
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## ✅ Running Unit Tests
 
 ```bash
 ng test
 ```
+Uses Karma test runner and Angular TestBed
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🔍 End-to-End Tests
 
 ```bash
 ng e2e
 ```
+You can install your own e2e framework (like Cypress or Playwright) if needed.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 💡 Developer Tips
+- Define shared SCSS styles in `src/styles/`
+- Use `--standalone` when generating new components
+- Stick to one UI role per component for reusability
+- Add imports manually for standalone components
+- Keep styling modular with one `.scss` file per component
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+## 📚 Resources
+- [Angular CLI Docs](https://angular.dev/tools/cli)
+- [Angular Dev Guides](https://angular.dev/)
+- [SCSS Reference](https://sass-lang.com/guide)
+
+Happy coding! 🎉

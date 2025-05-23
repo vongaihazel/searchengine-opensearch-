@@ -132,4 +132,22 @@ public class UserController {
         user.setEmail(dto.getEmail());
         return user;
     }
+
+    /**
+     * Authenticates a user based on username and email.
+     *
+     * @param userDTO the user credentials
+     * @return the matched {@link UserDTO} or 401 Unauthorized if not found
+     */
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> login(@RequestBody UserDTO userDTO) {
+        User user = userService.findByUsernameAndEmail(userDTO.getUsername(), userDTO.getEmail());
+        if (user != null) {
+            return ResponseEntity.ok(convertToDTO(user));
+        } else {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+    }
+
+
 }

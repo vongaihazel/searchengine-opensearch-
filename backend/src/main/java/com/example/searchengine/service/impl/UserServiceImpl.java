@@ -123,4 +123,15 @@ public class UserServiceImpl implements UserService {
         user.setUsername(dto.getUsername());
         return user;
     }
+
+    /**
+     * Finds a user by username and email for login purposes.
+     *
+     * @param username the username
+     * @param email the email
+     * @return the matching {@link User}, or null if not found
+     */
+    public User findByUsernameAndEmail(String username, String email) {
+        return userRepository.findByUsernameAndEmail(username, email).orElse(null);
+    }
 }

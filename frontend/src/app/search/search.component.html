@@ -1,37 +1,14 @@
 <div class="search-container">
-  <!-- Accessibility label for the search input -->
-  <label for="searchInput" class="sr-only">Search</label>
-  <input
-    id="searchInput"
-    [(ngModel)]="query"
-    placeholder="Search..."
-    class="search-input"
-    aria-label="Search"
-  />
-  <button (click)="search()" class="search-button" aria-label="Search button">Search</button>
+  <app-search-input (onSearch)="search($event)"></app-search-input>
 
   <div class="dropdown">
-    <button (click)="toggleHistory()" class="dropdown-button">
-      Search History
-    </button>
-    <div *ngIf="isHistoryVisible" class="dropdown-content">
-      <a
-        *ngFor="let history of searchHistory"
-        (click)="useHistory(history)"
-        class="dropdown-item"
-        href="javascript:void(0);"
-      >{{ history }}</a>
-
-      <div *ngIf="isHistoryEmpty" class="dropdown-item">
-        No search history yet.
-      </div>
-    </div>
+    <button (click)="toggleHistory()" class="dropdown-button">Search History</button>
+    <app-search-history
+      *ngIf="isHistoryVisible"
+      [history]="searchHistory"
+      (onSelect)="useHistory($event)">
+    </app-search-history>
   </div>
 
-  <div *ngIf="results.length > 0" class="results-container">
-    <h3>Results:</h3>
-    <ul>
-      <li *ngFor="let user of results">{{ user.username }}</li>
-    </ul>
-  </div>
+  <app-search-results [results]="results"></app-search-results>
 </div>

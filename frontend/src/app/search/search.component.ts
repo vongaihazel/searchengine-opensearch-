@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
-// Define the User interface
+import { SearchInputComponent } from './search-input/search-input.component';
+import { SearchHistoryComponent } from './search-history/search-history.component';
+import { SearchResultsComponent } from './search-results/search-results.component';
+
 export interface User {
   id: number;
   username: string;
@@ -15,10 +18,15 @@ export interface User {
   standalone: true,
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SearchInputComponent,
+    SearchHistoryComponent,
+    SearchResultsComponent
+  ],
 })
 export class SearchComponent implements OnInit {
-  query: string = '';
   userId: number = 1;
   searchHistory: string[] = [];
   results: User[] = [];
@@ -31,8 +39,8 @@ export class SearchComponent implements OnInit {
     this.getSearchHistory();
   }
 
-  search(): void {
-    this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query: this.query })
+  search(query: string): void {
+    this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query })
       .subscribe({
         next: (response) => {
           this.results = response;
@@ -58,8 +66,7 @@ export class SearchComponent implements OnInit {
   }
 
   useHistory(historyItem: string): void {
-    this.query = historyItem;
-    this.search();
+    this.search(historyItem);
     this.isHistoryVisible = false;
   }
 
