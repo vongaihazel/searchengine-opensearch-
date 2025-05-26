@@ -1,5 +1,5 @@
 # ---------- Stage 1: Build ----------
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 # Set working directory
 WORKDIR /app
@@ -12,10 +12,10 @@ RUN mvn clean install -DskipTests
 
 
 # ---------- Stage 2: Runtime ----------
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 
 # Set working directory
-WORKDIR /ap
+WORKDIR /app
 
 # Copy the JAR from the previous build stage
 COPY --from=build /app/target/searchengine-0.0.1-SNAPSHOT.jar app.jar
