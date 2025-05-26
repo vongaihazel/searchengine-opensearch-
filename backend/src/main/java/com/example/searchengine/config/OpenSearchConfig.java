@@ -1,31 +1,47 @@
 package com.example.searchengine.config;
 
-import org.opensearch.client.RestHighLevelClient;
+import org.apache.http.HttpHost;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.Header;
 import org.opensearch.client.RestClient;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
+import org.opensearch.client.json.JsonpMapper;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.apache.http.HttpHost;
 
-/**
- * Configuration class for setting up the OpenSearch client.
- * <p>
- * This configuration defines a {@link RestHighLevelClient} bean used to interact with an OpenSearch instance.
- * </p>
- */
+import java.util.Base64;
+
 @Configuration
 public class OpenSearchConfig {
 
-    /**
-     * Creates and configures a {@link RestHighLevelClient} for communicating with the OpenSearch server.
-     *
-     * @return a configured instance of {@link RestHighLevelClient}
-     */
+    @Value("${opensearch.host}")
+    private String host;
+
+    @Value("${opensearch.port}")
+    private int port;
+
+    @Value("${opensearch.username}")
+    private String username;
+
+    @Value("${opensearch.password}")
+    private String password;
+
     @Bean
-    public RestHighLevelClient openSearchClient() {
-        return new RestHighLevelClient(
-                RestClient.builder(
-                        new HttpHost("localhost", 9200, "http") // OpenSearch Docker port
+    public OpenSearchClient openSearchClient() {
+        RestClient restClient = RestClient.builder(
+                        new HttpHost(host, port, "http") // Change to "https" if using TLS
                 )
-        );
+                .setDefaultHeaders(new Header[]{
+                        new BasicHeader("Authorization",
+                                "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+                })
+                .build();
+
+        JsonpMapper mapper = new JacksonJsonpMapper();
+        RestClientTransport transport = new RestClientTransport(restClient, mapper);
+        return new OpenSearchClient(transport);
     }
 }

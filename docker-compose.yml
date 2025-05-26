@@ -1,13 +1,12 @@
 services:
   opensearch-node:
-    image: opensearchproject/opensearch:latest
+    image: opensearchproject/opensearch:2.11.1
     container_name: opensearch-node
     environment:
       - discovery.type=single-node
-      - plugins.security.disabled=true
       - bootstrap.memory_lock=true
       - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=MyStrongPassword123!
+      - OPENSEARCH_SECURITY_ADMIN_PASSWORD=MyStrongPassword123!
     ulimits:
       memlock:
         soft: -1
@@ -19,16 +18,17 @@ services:
       - opensearch-data1:/usr/share/opensearch/data
 
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:latest
+    image: opensearchproject/opensearch-dashboards:2.11.1
     container_name: opensearch_dashboards
     ports:
       - "5601:5601"
     depends_on:
       - opensearch-node
     environment:
-      - OPENSEARCH_HOSTS=http://opensearch-node:9200
+      - OPENSEARCH_HOSTS=https://opensearch-node:9200
       - OPENSEARCH_USERNAME=admin
       - OPENSEARCH_PASSWORD=MyStrongPassword123!
+      - OPENSEARCH_SSL_VERIFICATIONMODE=none
 
   postgres-db:
     image: postgres:latest
@@ -56,7 +56,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/searchdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: mysecretpassword
-      OPENSEARCH_HOSTS: http://opensearch-node:9200
+      OPENSEARCH_HOSTS: https://opensearch-node:9200
       OPENSEARCH_USERNAME: admin
       OPENSEARCH_PASSWORD: MyStrongPassword123!
 
