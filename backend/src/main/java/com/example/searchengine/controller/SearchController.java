@@ -11,10 +11,13 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller that provides endpoints for performing searches,
+ * saving search history, retrieving search history, and indexing articles.
+ */
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/search")
@@ -23,12 +26,25 @@ public class SearchController {
     private final SearchHistoryServiceImpl searchHistoryServiceImpl;
     private final OpenSearchServiceImpl openSearchService;
 
+    /**
+     * Constructor for injecting required services.
+     *
+     * @param searchHistoryServiceImpl the service for handling search history operations
+     * @param openSearchService        the service for interacting with OpenSearch
+     */
     public SearchController(SearchHistoryServiceImpl searchHistoryServiceImpl,
                             OpenSearchServiceImpl openSearchService) {
         this.searchHistoryServiceImpl = searchHistoryServiceImpl;
         this.openSearchService = openSearchService;
     }
 
+    /**
+     * Handles POST requests to perform a search and save the query to search history.
+     *
+     * @param searchRequest the request payload containing user ID and query string
+     * @return a response containing saved search history and matched articles,
+     * or an error message in case of failure
+     */
     @PostMapping("/query")
     public ResponseEntity<?> searchAndSave(@RequestBody SearchRequest searchRequest) {
         SearchHistory savedHistory = searchHistoryServiceImpl.saveQuery(searchRequest.getUserId(), searchRequest.getQuery());
@@ -43,7 +59,6 @@ public class SearchController {
                     .filter(a -> a != null)
                     .collect(Collectors.toList());
 
-            // 🟢 Return both history + articles
             return ResponseEntity.ok(new SearchResultResponse(savedHistory, articles));
 
         } catch (Exception e) {
@@ -52,6 +67,12 @@ public class SearchController {
         }
     }
 
+    /**
+     * Handles POST requests to index a new article into OpenSearch.
+     *
+     * @param article the article to be indexed
+     * @return a response indicating success or failure
+     */
     @PostMapping("/api/articles")
     public ResponseEntity<String> addArticle(@RequestBody Article article) {
         try {
@@ -62,6 +83,12 @@ public class SearchController {
         }
     }
 
+    /**
+     * Retrieves the search history for a specific user.
+     *
+     * @param userId the ID of the user
+     * @return a list of query strings previously searched by the user
+     */
     @GetMapping("/history/{userId}")
     public ResponseEntity<List<String>> getHistory(@PathVariable("userId") Long userId) {
         List<SearchHistory> userHistory = searchHistoryServiceImpl.getUserHistory(userId);
@@ -71,11 +98,21 @@ public class SearchController {
         return ResponseEntity.ok(simplifiedHistory);
     }
 
+    /**
+     * A simple endpoint to test if the API is running.
+     *
+     * @return a success message
+     */
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("API is working!");
     }
 
+    /**
+     * Default root endpoint for the search API.
+     *
+     * @return a welcome message
+     */
     @GetMapping("/")
     public ResponseEntity<String> home() {
         return ResponseEntity.ok("Welcome to the Search Engine API!");

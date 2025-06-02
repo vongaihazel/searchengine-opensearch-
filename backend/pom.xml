@@ -3,6 +3,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<!-- Inherits common dependencies/configuration from parent POM -->
 	<parent>
 		<groupId>com.example</groupId>
 		<artifactId>searchengine-parent</artifactId>
@@ -19,6 +20,7 @@
 		<spring-boot.version>3.2.5</spring-boot.version>
 	</properties>
 
+	<!-- Manages Spring Boot dependency versions centrally -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -32,7 +34,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Spring Boot -->
+		<!-- Spring Boot core web and JPA support -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -41,31 +43,36 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<!-- Hot reload for development -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- Testing dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Elasticsearch starter  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
 		</dependency>
 
-
-		<!-- PostgreSQL -->
+		<!-- PostgreSQL runtime driver -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Flyway -->
+		<!-- Flyway for database migrations -->
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
@@ -76,7 +83,7 @@
 			<version>10.10.0</version>
 		</dependency>
 
-		<!-- OpenSearch Java Client -->
+		<!-- OpenSearch Java client dependencies -->
 		<dependency>
 			<groupId>org.opensearch.client</groupId>
 			<artifactId>opensearch-java</artifactId>
@@ -88,7 +95,7 @@
 			<version>2.11.0</version>
 		</dependency>
 
-		<!-- Jackson for JSON mapping -->
+		<!-- Jackson for object-JSON mapping -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -96,6 +103,7 @@
 		</dependency>
 	</dependencies>
 
+	<!-- OpenSearch Maven repository -->
 	<repositories>
 		<repository>
 			<id>opensearch-repo</id>
@@ -105,6 +113,7 @@
 
 	<build>
 		<plugins>
+			<!-- Spring Boot Maven plugin for packaging executable JARs -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -117,12 +126,15 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Java compiler plugin (currently set to Java 9, though Java 21 is specified above) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>9</source>
-					<target>9</target>
+					<!--compiler plugin.version-->
+					<source>21</source>
+					<target>21</target>
 				</configuration>
 			</plugin>
 		</plugins>

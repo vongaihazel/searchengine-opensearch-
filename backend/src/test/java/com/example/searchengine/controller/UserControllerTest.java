@@ -1,6 +1,5 @@
 package com.example.searchengine.controller;
 
-// Import necessary classes for testing
 import com.example.searchengine.entity.User;
 import com.example.searchengine.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,50 +20,63 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Extend with Mockito for testing
+/**
+ * Unit tests for {@link UserController} using JUnit and Mockito.
+ * Tests cover the REST endpoints for retrieving and creating users.
+ */
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
 
-    private MockMvc mockMvc; // MockMvc instance for testing controller
+    private MockMvc mockMvc;
 
     @Mock
-    private UserServiceImpl userService; // Mocked user service
+    private UserServiceImpl userService;
 
     @InjectMocks
-    private UserController userController; // Controller to test
+    private UserController userController;
 
-    private User user; // Test user object
+    private User user;
 
+    /**
+     * Sets up MockMvc and test data before each test case.
+     * Initializes a test user and configures the controller under test.
+     */
     @BeforeEach
     public void setUp() {
-        // Set up MockMvc with the user controller
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
-        // Initialize the test user
         user = new User();
         user.setId(1L);
         user.setUsername("testUser");
     }
 
+    /**
+     * Tests the GET /users endpoint.
+     * Mocks the service response and verifies that the status returned is 200 OK.
+     *
+     * @throws Exception if the request fails
+     */
     @Test
     public void testGetAllUsers() throws Exception {
-        // Mock the service's getAllUsers method
         when(userService.getAllUsers()).thenReturn(List.of(user));
 
-        // Perform a GET request and check the response status
         mockMvc.perform(get("/users"))
-                .andExpect(status().isOk()); // Expect HTTP 200 OK
+                .andExpect(status().isOk());
     }
 
+    /**
+     * Tests the POST /users endpoint for creating a user.
+     * Mocks the service to return the user and verifies that the response status is 201 Created.
+     *
+     * @throws Exception if the request fails
+     */
     @Test
     public void testCreateUser() throws Exception {
-        // Mock the service's createUser method
         when(userService.createUser(any(User.class))).thenReturn(user);
 
-        // Perform a POST request to create a new user and check the response status
         mockMvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON) // Set content type to JSON
-                        .content("{\"username\": \"newUser\"}")) // User data in JSON format
-                .andExpect(status().isCreated()); // Expect HTTP 201 Created
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\": \"newUser\"}"))
+                .andExpect(status().isCreated());
     }
 }

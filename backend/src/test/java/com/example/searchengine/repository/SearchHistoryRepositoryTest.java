@@ -1,6 +1,5 @@
 package com.example.searchengine.repository;
 
-// Import necessary classes for testing
 import com.example.searchengine.entity.SearchHistory;
 import com.example.searchengine.entity.User;
 import org.junit.jupiter.api.AfterEach;
@@ -14,49 +13,56 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Mark this class for JPA testing
+/**
+ * Unit tests for {@link SearchHistoryRepository} using Spring Data JPA.
+ * These tests validate that SearchHistory entities are correctly persisted and retrieved.
+ */
 @DataJpaTest
 public class SearchHistoryRepositoryTest {
 
     @Autowired
-    private SearchHistoryRepository searchHistoryRepository; // Repository for SearchHistory
+    private SearchHistoryRepository searchHistoryRepository;
 
     @Autowired
-    private UserRepository userRepository; // Repository for User
+    private UserRepository userRepository;
 
-    private User user; // Test user object
+    private User user;
 
+    /**
+     * Initializes and persists a test user before each test case.
+     */
     @BeforeEach
     public void setUp() {
-        // Initialize and save a test user before each test
         user = new User();
         user.setUsername("testuser");
         userRepository.save(user);
     }
 
+    /**
+     * Cleans up all persisted data after each test to maintain isolation.
+     */
     @AfterEach
     public void tearDown() {
-        // Clean up the database after each test
         searchHistoryRepository.deleteAll();
         userRepository.deleteAll();
     }
 
+    /**
+     * Tests that a SearchHistory entry can be inserted and retrieved correctly for a user.
+     * Verifies the number of entries and query content.
+     */
     @Test
     public void testInsertSearchHistory() {
-        // Create a new SearchHistory object
         SearchHistory history = new SearchHistory();
-        history.setUser(user); // Associate with the test user
-        history.setQuery("example query"); // Set the search query
-        history.setTimestamp(LocalDateTime.now()); // Set the current timestamp
+        history.setUser(user);
+        history.setQuery("example query");
+        history.setTimestamp(LocalDateTime.now());
 
-        // Save the search history
         searchHistoryRepository.save(history);
 
-        // Retrieve the search history for the user
         List<SearchHistory> histories = searchHistoryRepository.findByUserId(user.getId());
 
-        // Assertions to verify the saved history
-        assertThat(histories).hasSize(1); // Check that one record exists
-        assertThat(histories.get(0).getQuery()).isEqualTo("example query"); // Check the query value
+        assertThat(histories).hasSize(1);
+        assertThat(histories.get(0).getQuery()).isEqualTo("example query");
     }
 }

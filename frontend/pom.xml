@@ -1,57 +1,71 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- Define the model version of the POM -->
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- Reference to the parent project for shared configuration and dependency management -->
   <parent>
     <groupId>com.example</groupId>
     <artifactId>searchengine-parent</artifactId>
     <version>1.0.0</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath> <!-- Path to the parent POM -->
   </parent>
 
+  <!-- Artifact ID for this module -->
   <artifactId>frontend</artifactId>
+
+  <!-- Define this module as a packaging type "pom", since it's not a Java app -->
   <packaging>pom</packaging>
+
+  <!-- Name of the module -->
   <name>searchengine-frontend</name>
 
   <build>
     <plugins>
+      <!-- Plugin to manage Node.js and npm tasks inside Maven -->
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
+
         <executions>
+
+          <!-- Step 1: Install specific Node.js and npm versions -->
           <execution>
             <id>install-node-and-npm</id>
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>
             <configuration>
-              <nodeVersion>v18.19.1</nodeVersion>
-              <npmVersion>9.8.1</npmVersion>
+              <nodeVersion>v18.19.1</nodeVersion> <!-- Node.js version -->
+              <npmVersion>9.8.1</npmVersion>       <!-- npm version -->
             </configuration>
           </execution>
 
+          <!-- Step 2: Run `npm install` to install dependencies -->
           <execution>
             <id>npm install</id>
             <goals>
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>install</arguments>
-              <workingDirectory>.</workingDirectory>
+              <arguments>install</arguments>       <!-- Equivalent to running: npm install -->
+              <workingDirectory>.</workingDirectory> <!-- Run in project root -->
             </configuration>
           </execution>
 
+          <!-- Step 3: Run `npm run build` to build the frontend -->
           <execution>
             <id>npm build</id>
             <goals>
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run build</arguments>
+              <arguments>run build</arguments>     <!-- Equivalent to running: npm run build -->
               <workingDirectory>.</workingDirectory>
             </configuration>
           </execution>
+
         </executions>
       </plugin>
     </plugins>

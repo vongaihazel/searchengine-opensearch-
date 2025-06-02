@@ -1,6 +1,5 @@
 package com.example.searchengine.controller;
 
-// Import necessary classes for testing
 import com.example.searchengine.entity.SearchHistory;
 import com.example.searchengine.entity.User;
 import com.example.searchengine.service.impl.SearchHistoryServiceImpl;
@@ -18,31 +17,42 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Extend with Mockito for testing
+/**
+ * Unit test class for {@link SearchController}.
+ * Uses Mockito and MockMvc to test the /search/query endpoint without starting a full application context.
+ */
 @ExtendWith(MockitoExtension.class)
 public class SearchControllerTest {
 
-    private MockMvc mockMvc; // MockMvc instance for testing controller
+    private MockMvc mockMvc;
 
     @Mock
-    private SearchHistoryServiceImpl searchHistoryServiceImpl; // Mocked service
+    private SearchHistoryServiceImpl searchHistoryServiceImpl;
 
     @InjectMocks
-    private SearchController searchController; // Controller to test
+    private SearchController searchController;
 
-    private User user; // Test user object
+    private User user;
 
+    /**
+     * Sets up the testing environment before each test.
+     * Initializes MockMvc with the SearchController and creates a test user.
+     */
     @BeforeEach
     public void setUp() {
-        // Set up MockMvc with the controller
         mockMvc = MockMvcBuilders.standaloneSetup(searchController).build();
 
-        // Initialize the test user
         user = new User();
         user.setId(1L);
         user.setUsername("testUser");
     }
 
+    /**
+     * Tests the /search/query POST endpoint.
+     * Verifies that a search query is saved and the API responds with status 200 OK.
+     *
+     * @throws Exception in case of MockMvc failure
+     */
     @Test
     public void testSaveQuery() throws Exception {
         // Create a SearchHistory object to be returned by the mocked service
@@ -57,10 +67,10 @@ public class SearchControllerTest {
         // Create a JSON string for the SearchRequest
         String searchRequestJson = "{\"userId\": 1, \"query\": \"test query\"}";
 
-        // Perform a POST request with the JSON body
+        // Perform a POST request with the JSON body and expect HTTP 200 OK
         mockMvc.perform(post("/search/query")
-                        .contentType(MediaType.APPLICATION_JSON) // Set content type to JSON
-                        .content(searchRequestJson)) // Send JSON request body
-                .andExpect(status().isOk()); // Expect HTTP 200 OK
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(searchRequestJson))
+                .andExpect(status().isOk());
     }
 }

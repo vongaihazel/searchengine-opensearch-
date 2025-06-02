@@ -1,14 +1,18 @@
 package com.example.searchengine;
 
-// Import necessary classes for testing
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-// Annotation to indicate a Spring Boot test class
+/**
+ * Integration test to verify that the Spring Boot application context loads correctly.
+ * This is a basic smoke test to ensure that the application configuration is valid.
+ */
 @SpringBootTest
 class SearchengineApplicationTests {
 
-	// Test to check if the application context loads successfully
+	/**
+	 * Test method to confirm the Spring application context loads without errors.
+	 */
 	@Test
 	void contextLoads() {
 	}

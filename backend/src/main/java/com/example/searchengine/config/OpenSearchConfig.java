@@ -18,29 +18,61 @@ import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 
+/**
+ * Spring configuration class for setting up the OpenSearch client bean.
+ * <p>
+ * This class constructs a secure (but dev-friendly) {@link OpenSearchClient}
+ * that uses basic authentication and ignores SSL verification (for development purposes only).
+ * </p>
+ */
 @Configuration
 public class OpenSearchConfig {
 
     private final OpenSearchConfigProperties config;
 
+    /**
+     * Constructor for injecting {@link OpenSearchConfigProperties}.
+     *
+     * @param config the configuration properties for OpenSearch
+     */
     public OpenSearchConfig(OpenSearchConfigProperties config) {
         this.config = config;
     }
 
+    /**
+     * Creates and configures the {@link OpenSearchClient} bean with SSL support
+     * and basic authentication.
+     *
+     * @return the configured {@link OpenSearchClient}
+     */
     @Bean
     public OpenSearchClient openSearchClient() {
         try {
-            // Trust all certs (for development only)
+            // Trust all certificates (NOT for production use)
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) { }
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                            // No-op
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                            // No-op
+                        }
                     }
             };
+
+            // Set up a permissive SSL context (dev only)
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
+            // Configure the low-level REST client
             RestClient restClient = RestClient.builder(
                             new HttpHost(config.getHost(), config.getPort(), "https"))
                     .setDefaultHeaders(new Header[]{
@@ -57,8 +89,11 @@ public class OpenSearchConfig {
                     )
                     .build();
 
+            // Use Jackson for JSON mapping
             JsonpMapper mapper = new JacksonJsonpMapper();
             RestClientTransport transport = new RestClientTransport(restClient, mapper);
+
+            // Create and return the OpenSearch client
             return new OpenSearchClient(transport);
 
         } catch (Exception e) {

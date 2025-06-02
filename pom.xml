@@ -1,28 +1,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Define the model version of the POM -->
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Group ID for the project -->
     <groupId>com.example</groupId>
+
+    <!-- Artifact ID of the parent project -->
     <artifactId>searchengine-parent</artifactId>
+
+    <!-- Version of the project -->
     <version>1.0.0</version>
+
+    <!-- This is a parent POM, not a module or jar -->
     <packaging>pom</packaging>
+
+    <!-- Name of the project -->
     <name>Search Engine Fullstack Project</name>
 
+    <!-- Declare submodules that are part of this multi-module project -->
     <modules>
-        <module>backend</module>
-        <module>frontend</module>
+        <module>backend</module>   <!-- Backend Spring Boot module -->
+        <module>frontend</module>  <!-- Frontend Angular/Vite/React/etc. module -->
     </modules>
 
     <properties>
+        <!-- Java version to be used throughout the project -->
         <java.version>21</java.version>
+
+        <!-- Version of the frontend-maven-plugin for consistent usage across modules -->
         <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
     </properties>
 
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Plugin management section for centralized plugin configuration -->
                 <plugin>
+                    <!-- Plugin used to manage Node.js and npm-based frontend builds -->
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
                     <version>${frontend-maven-plugin.version}</version>

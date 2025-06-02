@@ -1,6 +1,5 @@
 package com.example.searchengine.service;
 
-// Import necessary classes for testing
 import com.example.searchengine.entity.SearchHistory;
 import com.example.searchengine.entity.User;
 import com.example.searchengine.repository.SearchHistoryRepository;
@@ -18,59 +17,61 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Extend with Mockito for testing
+/**
+ * Unit tests for {@link SearchHistoryServiceImpl} using Mockito.
+ * This test class verifies the service logic for saving and retrieving search history.
+ */
 @ExtendWith(MockitoExtension.class)
 public class SearchHistoryServiceImplTest {
 
     @Mock
-    private UserRepository userRepository; // Mocked user repository
+    private UserRepository userRepository;
 
     @Mock
-    private SearchHistoryRepository searchHistoryRepository; // Mocked search history repository
+    private SearchHistoryRepository searchHistoryRepository;
 
     @InjectMocks
-    private SearchHistoryServiceImpl searchHistoryServiceImpl; // Service under test
+    private SearchHistoryServiceImpl searchHistoryServiceImpl;
 
-    private User user; // Test user object
+    private User user;
 
+    /**
+     * Initializes common test data before each test case.
+     */
     @BeforeEach
     public void setUp() {
-        // Initialize the test user before each test
         user = new User();
         user.setId(1L);
         user.setUsername("testuser");
     }
 
+    /**
+     * Tests the {@code saveQuery} method to ensure a new search history entry is saved correctly.
+     * Mocks the user lookup and verifies that the save operation is triggered once.
+     */
     @Test
     public void testInsertQuery() {
-        // Stub the user repository to return the test user
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
-
-        // Call the method under test
         searchHistoryServiceImpl.saveQuery(user.getId(), "example query");
-
-        // Verify that the save method was called once on the repository
         verify(searchHistoryRepository, times(1)).save(any(SearchHistory.class));
     }
 
+    /**
+     * Tests the {@code getUserHistory} method to verify retrieval of a user's search history.
+     * Ensures the correct data is returned and the repository method is called once.
+     */
     @Test
     public void testGetUserHistory() {
-        // Create a new SearchHistory object
         SearchHistory history = new SearchHistory();
         history.setUser(user);
         history.setQuery("example query");
 
-        // Stub the search history repository to return the test history
         when(searchHistoryRepository.findByUserId(1L)).thenReturn(List.of(history));
 
-        // Call the method under test
         List<SearchHistory> histories = searchHistoryServiceImpl.getUserHistory(1L);
 
-        // Assertions to verify the results
-        assertThat(histories).hasSize(1); // Check the size of history
-        assertThat(histories.get(0).getQuery()).isEqualTo("example query"); // Check the query value
-
-        // Verify that the findByUserId method was called once on the repository
+        assertThat(histories).hasSize(1);
+        assertThat(histories.get(0).getQuery()).isEqualTo("example query");
         verify(searchHistoryRepository, times(1)).findByUserId(1L);
     }
 }
