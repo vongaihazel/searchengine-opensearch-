@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "title": "OpenSearch Integration",
+    "content": "This article explains how to integrate OpenSearch with Spring Boot"
+  },
+  {
+    "id": "2",
+    "title": "Intro to Spring Boot",
+    "content": "Spring Boot simplifies application development with Spring"
+  },
+  {
+    "id": "3",
+    "title": "Docker for Java Developers",
+    "content": "Learn how Docker works with Spring Boot and containers"
+  },
+  {
+    "id": "4",
+    "title": "Understanding OpenSearch",
+    "content": "OpenSearch is a powerful tool for full-text search and analytics"
+  }
+]

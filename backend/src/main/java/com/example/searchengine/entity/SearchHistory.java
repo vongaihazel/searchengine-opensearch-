@@ -3,6 +3,7 @@ package com.example.searchengine.entity;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Entity representing a record of a user's search history.
@@ -23,6 +24,7 @@ public class SearchHistory {
     /** The user who performed the search. */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"searchHistory"})
     private User user;
 
     /** The search query string entered by the user. */

@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
  * updating, and deleting users, as well as listing users with search history.
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class UserController {
 
     private final UserServiceImpl userService;
@@ -62,7 +64,7 @@ public class UserController {
      * @return the user as a {@link UserDTO}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(convertToDTO(user));
     }
@@ -88,7 +90,7 @@ public class UserController {
      * @return the updated {@link UserDTO} object
      */
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
         User updatedUser = userService.updateUser(id, convertToEntity(userDTO));
         return ResponseEntity.ok(convertToDTO(updatedUser));
     }
@@ -100,7 +102,7 @@ public class UserController {
      * @return a {@link ResponseEntity} with HTTP 204 No Content status
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -127,7 +129,7 @@ public class UserController {
      */
     private User convertToEntity(UserDTO dto) {
         User user = new User();
-        user.setId(dto.getId()); // optional; skip this if creating new users only
+        // Do NOT set ID manually on create, it should be auto-generated
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         return user;
@@ -148,6 +150,4 @@ public class UserController {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
     }
-
-
 }

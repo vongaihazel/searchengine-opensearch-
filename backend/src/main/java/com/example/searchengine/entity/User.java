@@ -2,6 +2,7 @@ package com.example.searchengine.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Entity representing a user of the search engine system.
@@ -29,6 +30,7 @@ public class User {
      * Eagerly fetched to immediately load all related search history records.
      */
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<SearchHistory> searchHistory;
 
     /**

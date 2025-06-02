@@ -1,44 +1,57 @@
 package com.example.searchengine.service.impl;
 
+import com.example.searchengine.model.Article;
 import com.example.searchengine.service.OpenSearchService;
-import org.opensearch.action.search.SearchRequest;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.client.RequestOptions;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch.core.IndexRequest;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
+import org.opensearch.client.opensearch.core.search.Hit;
+import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Service implementation for interacting with OpenSearch.
- * <p>
- * Provides functionality to perform search operations using OpenSearch.
- * </p>
- */
+import java.io.IOException;
+import java.util.List;
+
 @Service
 public class OpenSearchServiceImpl implements OpenSearchService {
 
-    /**
-     * OpenSearch REST high-level client injected by Spring.
-     */
     @Autowired
-    private RestHighLevelClient client;
+    private OpenSearchClient client;
 
     /**
-     * Performs a search operation against the "my_index" index using the provided query.
+     * Performs a search operation using OpenSearch Java client.
      *
-     * @param query the search term to match against the "username" field
-     * @return the {@link SearchResponse} returned by OpenSearch
-     * @throws Exception if the search request fails
+     * @param query the search term
+     * @return the SearchResponse object containing matching results
+     * @throws Exception if the search fails
      */
     @Override
-    public SearchResponse search(String query) throws Exception {
-        SearchRequest searchRequest = new SearchRequest("my_index"); // Replace with actual index name if needed
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(QueryBuilders.matchQuery("username", query));
-        searchRequest.source(sourceBuilder);
+    public SearchResponse<Article> search(String query) throws Exception {
+        SearchRequest request = SearchRequest.of(s -> s
+                .index("articles") // Your index name
+                .query(q -> q
+                        .match(m -> m
+                                .field("content")
+                                .query(FieldValue.of(query))
+                        )
+                )
+        );
 
-        return client.search(searchRequest, RequestOptions.DEFAULT);
+        return client.search(request, Article.class);
     }
+
+    public void indexArticle(Article article) throws IOException {
+        IndexRequest<Article> request = new IndexRequest.Builder<Article>()
+                .index("articles")
+                .id(article.getId())
+                .document(article)
+                .build();
+        client.index(request);
+
+    }
+
 }

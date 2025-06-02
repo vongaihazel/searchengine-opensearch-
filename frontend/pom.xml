@@ -7,11 +7,11 @@
     <groupId>com.example</groupId>
     <artifactId>searchengine-parent</artifactId>
     <version>1.0.0</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>frontend</artifactId>
   <packaging>pom</packaging>
-
   <name>searchengine-frontend</name>
 
   <build>
@@ -22,26 +22,34 @@
         <executions>
           <execution>
             <id>install-node-and-npm</id>
-            <goals><goal>install-node-and-npm</goal></goals>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
             <configuration>
-              <nodeVersion>v18.18.2</nodeVersion>
+              <nodeVersion>v18.19.1</nodeVersion>
               <npmVersion>9.8.1</npmVersion>
             </configuration>
           </execution>
+
           <execution>
             <id>npm install</id>
-            <goals><goal>npm</goal></goals>
+            <goals>
+              <goal>npm</goal>
+            </goals>
             <configuration>
               <arguments>install</arguments>
-              <workingDirectory>src/main/frontend</workingDirectory>
+              <workingDirectory>.</workingDirectory>
             </configuration>
           </execution>
+
           <execution>
             <id>npm build</id>
-            <goals><goal>npm</goal></goals>
+            <goals>
+              <goal>npm</goal>
+            </goals>
             <configuration>
               <arguments>run build</arguments>
-              <workingDirectory>src/main/frontend</workingDirectory>
+              <workingDirectory>.</workingDirectory>
             </configuration>
           </execution>
         </executions>

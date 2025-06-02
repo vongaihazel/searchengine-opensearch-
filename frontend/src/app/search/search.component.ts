@@ -8,9 +8,10 @@ import { SearchInputComponent } from './search-input/search-input.component';
 import { SearchHistoryComponent } from './search-history/search-history.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
 
-export interface User {
-  id: number;
-  username: string;
+export interface Article {
+  id: string;
+  title: string;
+  content: string;
 }
 
 @Component({
@@ -29,7 +30,7 @@ export interface User {
 export class SearchComponent implements OnInit {
   userId: number = 1;
   searchHistory: string[] = [];
-  results: User[] = [];
+  results: Article[] = [];
   isHistoryVisible: boolean = false;
   isHistoryEmpty: boolean = false;
 
@@ -43,7 +44,8 @@ export class SearchComponent implements OnInit {
     this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query })
       .subscribe({
         next: (response) => {
-          this.results = response;
+          console.log('Full search response:', response); // For debugging
+          this.results = response.openSearchResults || [];
           this.getSearchHistory();
         },
         error: (error) => {
@@ -72,5 +74,9 @@ export class SearchComponent implements OnInit {
 
   toggleHistory(): void {
     this.isHistoryVisible = !this.isHistoryVisible;
+    if (this.isHistoryVisible) {
+      this.getSearchHistory(); // Refresh history each time dropdown opens
+    }
   }
+
 }

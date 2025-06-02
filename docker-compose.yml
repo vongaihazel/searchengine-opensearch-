@@ -6,7 +6,7 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
-      - OPENSEARCH_SECURITY_ADMIN_PASSWORD=MyStrongPassword123!
+      - OPENSEARCH_SECURITY_ADMIN_PASSWORD=admin  # <-- your desired password
     ulimits:
       memlock:
         soft: -1
@@ -27,7 +27,7 @@ services:
     environment:
       - OPENSEARCH_HOSTS=https://opensearch-node:9200
       - OPENSEARCH_USERNAME=admin
-      - OPENSEARCH_PASSWORD=MyStrongPassword123!
+      - OPENSEARCH_PASSWORD=admin
       - OPENSEARCH_SSL_VERIFICATIONMODE=none
 
   postgres-db:
@@ -44,7 +44,7 @@ services:
 
   web:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: searchengine_app
     ports:
@@ -56,9 +56,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/searchdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: mysecretpassword
-      OPENSEARCH_HOSTS: https://opensearch-node:9200
+      OPENSEARCH_HOST: opensearch-node
+      OPENSEARCH_PORT: 9200
       OPENSEARCH_USERNAME: admin
-      OPENSEARCH_PASSWORD: MyStrongPassword123!
+      OPENSEARCH_PASSWORD: admin  # <-- match backend credentials
 
   angular:
     build:

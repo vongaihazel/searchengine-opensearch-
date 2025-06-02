@@ -1,7 +1,9 @@
 package com.example.searchengine;
 
+import com.example.searchengine.config.OpenSearchConfigProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * Entry point for the Search Engine Spring Boot application.
@@ -10,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * which starts the embedded server and initializes the Spring application context.
  */
 @SpringBootApplication
+@EnableConfigurationProperties(OpenSearchConfigProperties.class)
 public class SearchengineApplication {
 
 	/**

@@ -5,7 +5,16 @@ public class Article {
     private String title;
     private String content;
 
-    // Getters and Setters
+    //  Default constructor required for deserialization
+    public Article() {}
+
+    // Optional constructor for convenience
+    public Article(String id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+    }
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

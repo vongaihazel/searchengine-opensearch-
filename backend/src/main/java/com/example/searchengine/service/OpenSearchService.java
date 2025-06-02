@@ -1,6 +1,7 @@
 package com.example.searchengine.service;
 
-import org.opensearch.action.search.SearchResponse;
+import com.example.searchengine.model.Article;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 /**
  * Service interface for performing search operations using OpenSearch.
@@ -14,5 +15,5 @@ public interface OpenSearchService {
      * @return a {@link SearchResponse} containing the search results
      * @throws Exception if an error occurs during the search operation
      */
-    SearchResponse search(String query) throws Exception;
+    SearchResponse<Article> search(String query) throws Exception;
 }
