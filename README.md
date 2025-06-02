@@ -43,7 +43,7 @@ searchengine/
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/vongaihazel/searchengine.git
+git clone https://github.com/vongaihazel/searchengine-opensearch-.git
 cd searchengine
 ```
 
