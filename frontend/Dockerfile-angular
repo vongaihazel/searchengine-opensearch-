@@ -1,4 +1,4 @@
-# Stage 1: Build Angular app
+# ---------- Stage 1: Build Angular app ----------
 FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
@@ -6,14 +6,9 @@ RUN npm install
 COPY . .
 RUN npm run build -- --configuration production
 
-# Stage 2: Serve with Nginx
+# ---------- Stage 2: Serve with Nginx ----------
 FROM nginx:alpine
-
-# Copy built Angular files from /dist/searchengine/browser to Nginx root
 COPY --from=build /app/dist/searchengine/browser /usr/share/nginx/html
-
-# Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
-
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
