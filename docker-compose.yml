@@ -78,13 +78,13 @@ services:
     container_name: postman_cli
     depends_on:
       - web
-    command: >
-      sh -c "
+    command:
+      - sh
+        - -c
+        - |
         echo 'Waiting for backend...' &&
         until curl -s http://web:8080/search/test; do sleep 5; done &&
-        postman collection run ./postman-tests/collection.json \
-          --env-var baseUrl=http://web:8080 --verbose
-      "
+        postman collection run ./postman-tests/collection.json --env-var baseUrl=http://web:8080 --verbose
 
 volumes:
   opensearch-data1:

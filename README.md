@@ -96,9 +96,11 @@ cd ..
 
 #### A. (Recommended) Use PowerShell Script (Windows only)
 
-```powershell
-cd C:\Projects\searchengine
+```windows
 .\import-articles.ps1
+```
+```linux
+./import-articles.sh
 ```
 
 Make sure `jq.exe` is in your system PATH.

@@ -6,7 +6,6 @@ WORKDIR /app
 COPY pom.xml .
 COPY backend/pom.xml ./backend/pom.xml
 COPY frontend/pom.xml ./frontend/pom.xml
-RUN mvn dependency:go-offline
 
 # Copy backend code only
 COPY backend /app/backend

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
-
+import { Observable, of } from 'rxjs';
 import { SearchInputComponent } from './search-input/search-input.component';
 import { SearchHistoryComponent } from './search-history/search-history.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
@@ -33,6 +33,7 @@ export class SearchComponent implements OnInit {
   results: Article[] = [];
   isHistoryVisible: boolean = false;
   isHistoryEmpty: boolean = false;
+  userName$: Observable<string> = of('Guest');
 
   constructor(private http: HttpClient) {}
 
@@ -40,16 +41,22 @@ export class SearchComponent implements OnInit {
     this.getSearchHistory();
   }
 
+  isLoading = false;
+
   search(query: string): void {
+    this.isLoading = true;
+    this.isHistoryVisible = false;
     this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query })
       .subscribe({
         next: (response) => {
           console.log('Full search response:', response); // For debugging
           this.results = response.openSearchResults || [];
           this.getSearchHistory();
+           this.isLoading = false;
         },
         error: (error) => {
           console.error('Error during search', error);
+          this.isLoading = false;
         }
       });
   }

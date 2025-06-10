@@ -1,24 +1,28 @@
-
-<main>
-  <div class="content">
-    <h1>Hello, {{ (userName$ | async) ? (userName$ | async) : 'Guest' }}</h1>
-    <p>Welcome to my Search Engine 🎉</p>
-    <nav>
-      <a routerLink="/sign-in">Sign In</a>
-      <span class="link-separator">|</span>
-      <a routerLink="/create-user">Create User</a>
-    </nav>
-
-    <router-outlet></router-outlet>
-
-    <div class="social-links">
-      <a href="https://github.com/angular/angular" aria-label="Github" target="_blank" rel="noopener">
-        <!-- GitHub SVG here -->
-      </a>
-
-      <a href="https://twitter.com/angular" aria-label="Twitter" target="_blank" rel="noopener">
-        <!-- Twitter SVG here -->
-      </a>
-    </div>
+<header class="top-bar">
+  <div class="top-left">
+    <a routerLink="/" class="home-icon" aria-label="Home">
+      <i class="bi bi-house-door-fill"></i>
+    </a>
+  <div class="user-info">
+    Hello, {{ (userName$ | async) ? (userName$ | async) : 'Guest' }}
   </div>
+
+  </div>
+  <nav class="top-links">
+    <button (click)="toggleHistory()" class="history-button">History</button>
+    <a routerLink="/sign-in" class="nav-link">Sign In</a>
+    <span class="link-separator">|</span>
+    <a routerLink="/create-user" class="nav-link">Create User</a>
+  </nav>
+</header>
+
+<div *ngIf="isHistoryVisible" class="history-dropdown">
+  <app-search-history
+    [history]="searchHistory"
+    (onSelect)="useHistory($event)">
+  </app-search-history>
+</div>
+
+<main class="main-container">
+    <router-outlet></router-outlet>
 </main>

@@ -1,3 +1,12 @@
-<label for="searchInput" class="sr-only">Search</label>
-<input id="searchInput" [(ngModel)]="query" placeholder="Search..." class="search-input" />
-<button (click)="emitSearch()" class="search-button">Search</button>
+<form (submit)="emitSearch()" class="search-form">
+  <input
+    #searchBox
+    id="searchInput"
+    [(ngModel)]="query"
+    name="query"
+    class="search-input"
+  />
+  <button type="submit" class="search-button">
+    <i class="bi bi-search"></i>
+  </button>
+</form>

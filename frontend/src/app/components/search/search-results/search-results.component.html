@@ -1,13 +1,7 @@
-<div class="results-container" *ngIf="results.length > 0">
-  <h3>Search Results</h3>
-  <ul>
-    <li *ngFor="let article of results">
-      <strong>{{ article.title }}</strong><br />
-      <span>{{ article.content }}</span>
-    </li>
-  </ul>
-</div>
+<ul class="results-container" *ngIf="results.length > 0">
+  <li *ngFor="let article of results">
+    <strong>{{ article.title }}</strong><br />
+    <span>{{ article.content }}</span>
+  </li>
+</ul>
 
-<div *ngIf="results.length === 0">
-  <p>No results found.</p>
-</div>
