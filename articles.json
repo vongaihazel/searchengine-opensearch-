@@ -2,21 +2,78 @@
   {
     "id": "1",
     "title": "OpenSearch Integration",
-    "content": "This article explains how to integrate OpenSearch with Spring Boot"
+    "content": "This article explains how to integrate OpenSearch with Spring Boot.",
+    "category": "Search",
+    "author": "Alice",
+    "publish_date": "2025-06-01",
+    "tags": ["OpenSearch", "Spring Boot"],
+    "views": 150,
+    "rating": 5
   },
   {
     "id": "2",
     "title": "Intro to Spring Boot",
-    "content": "Spring Boot simplifies application development with Spring"
+    "content": "Spring Boot simplifies application development with Spring.",
+    "category": "Spring Boot",
+    "author": "Bob",
+    "publish_date": "2025-05-25",
+    "tags": ["Spring Boot"],
+    "views": 200,
+    "rating": 4
   },
   {
     "id": "3",
     "title": "Docker for Java Developers",
-    "content": "Learn how Docker works with Spring Boot and containers"
+    "content": "Learn how Docker works with Spring Boot and containers.",
+    "category": "DevOps",
+    "author": "Charlie",
+    "publish_date": "2025-06-03",
+    "tags": ["Docker", "Spring Boot"],
+    "views": 175,
+    "rating": 4
   },
   {
     "id": "4",
     "title": "Understanding OpenSearch",
-    "content": "OpenSearch is a powerful tool for full-text search and analytics"
+    "content": "OpenSearch is a powerful tool for full-text search and analytics.",
+    "category": "Search",
+    "author": "Alice",
+    "publish_date": "2025-06-04",
+    "tags": ["OpenSearch", "Analytics"],
+    "views": 220,
+    "rating": 5
+  },
+  {
+    "id": "5",
+    "title": "Using PostgreSQL with Spring",
+    "content": "A guide to integrating PostgreSQL into Spring Boot apps.",
+    "category": "Database",
+    "author": "Diana",
+    "publish_date": "2025-06-02",
+    "tags": ["PostgreSQL", "Spring Boot"],
+    "views": 130,
+    "rating": 3
+  },
+  {
+    "id": "6",
+    "title": "Deploying Java Apps with Docker Compose",
+    "content": "Step-by-step tutorial for deploying Spring Boot apps using Docker Compose.",
+    "category": "DevOps",
+    "author": "Charlie",
+    "publish_date": "2025-06-05",
+    "tags": ["Docker", "Deployment"],
+    "views": 190,
+    "rating": 4
+  },
+  {
+    "id": "7",
+    "title": "Monitoring with OpenSearch Dashboards",
+    "content": "Visualizing and monitoring your logs using OpenSearch Dashboards.",
+    "category": "Monitoring",
+    "author": "Eve",
+    "publish_date": "2025-06-06",
+    "tags": ["Monitoring", "OpenSearch"],
+    "views": 160,
+    "rating": 5
   }
 ]

@@ -94,12 +94,17 @@ cd ..
 
 > This replaces the old `DataLoader.java`.
 
-#### A. (Recommended) Use PowerShell Script (Windows only)
+#### A. Use PowerShell Script (Windows or Linux)
 
 ```windows
 .\import-articles.ps1
 ```
+Make Script executable
 ```linux
+chmod +x import-articles.sh
+```
+Run it
+```
 ./import-articles.sh
 ```
 

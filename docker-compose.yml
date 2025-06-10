@@ -59,7 +59,7 @@ services:
       OPENSEARCH_HOST: opensearch-node
       OPENSEARCH_PORT: 9200
       OPENSEARCH_USERNAME: admin
-      OPENSEARCH_PASSWORD: admin  # <-- match backend credentials
+      OPENSEARCH_PASSWORD: admin
 
   angular:
     build:
@@ -78,13 +78,13 @@ services:
     container_name: postman_cli
     depends_on:
       - web
-    command:
-      - sh
-        - -c
-        - |
-        echo 'Waiting for backend...' &&
-        until curl -s http://web:8080/search/test; do sleep 5; done &&
-        postman collection run ./postman-tests/collection.json --env-var baseUrl=http://web:8080 --verbose
+    command: > 
+      sh -c "
+      echo 'Waiting for backend...' &&
+      until curl -s http://web:8080/search/test; do sleep 5; done &&
+      postman collection run ./postman-tests/collection.json \
+      --env-var baseUrl=http://web:8080 --verbose
+      "
 
 volumes:
   opensearch-data1:
