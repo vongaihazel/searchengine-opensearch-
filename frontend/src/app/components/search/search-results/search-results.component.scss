@@ -11,9 +11,11 @@
 }
 
 .results-container li {
-  padding: 1rem;
+  padding: 1.5rem 2rem;
   margin-bottom: 1rem;
   border: 1px solid #eee;
   border-radius: 6px;
   background-color: #f9f9f9;
+  width: 100%;
+  box-sizing: border-box;
 }

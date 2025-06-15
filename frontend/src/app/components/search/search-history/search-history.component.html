@@ -1,6 +1,12 @@
 <div class="dropdown-content">
-  <a *ngFor="let item of history" (click)="onSelect.emit(item)" class="dropdown-item">
+  <a
+    *ngFor="let item of history"
+    (click)="onSelect.emit(item)"
+    class="dropdown-item"
+    href="javascript:void(0)">
     {{ item }}
   </a>
-  <div *ngIf="history.length === 0" class="dropdown-item">No search history yet.</div>
+  <div *ngIf="history.length === 0" class="dropdown-item">
+    No search history yet.
+  </div>
 </div>

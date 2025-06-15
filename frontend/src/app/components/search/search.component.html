@@ -1,8 +1,25 @@
-  <div class="search-container">
-    <h1 class="engine-name">V´s Searchengine</h1>
+<div class="search-container">
+  <h1 class="engine-name">V´s Searchengine</h1>
+
+  <div class="search-bar-with-history">
     <app-search-input (onSearch)="search($event)"></app-search-input>
 
-    <div *ngIf="isLoading" class="loading-spinner">Searching...</div>
+    <div class="history-wrapper">
+      <button (click)="toggleHistory()" class="history-button">History</button>
 
-    <app-search-results [results]="results"></app-search-results>
+      <div class="history-dropdown" [class.show]="isHistoryVisible">
+        <app-search-history
+          [history]="searchHistory"
+          (onSelect)="useHistory($event)">
+        </app-search-history>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">Searching...</div>
+
+  <app-search-results
+    [results]="results"
+    [searchTerm]="currentSearchTerm">
+  </app-search-results>
 </div>

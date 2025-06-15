@@ -3,18 +3,16 @@ package com.example.searchengine.service.impl;
 import com.example.searchengine.model.Article;
 import com.example.searchengine.service.OpenSearchService;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-import org.opensearch.client.opensearch.core.search.Hit;
-import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
+import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.TextQueryType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public class OpenSearchServiceImpl implements OpenSearchService {
@@ -31,19 +29,36 @@ public class OpenSearchServiceImpl implements OpenSearchService {
      */
     @Override
     public SearchResponse<Article> search(String query) throws Exception {
+        Query queryBuilder;
+
+        // If query is "*" or empty/null, perform a match_all query to get all documents
+        if (query == null || query.trim().equals("*") || query.trim().isEmpty()) {
+            queryBuilder = Query.of(q -> q.matchAll(MatchAllQuery.of(m -> m)));
+        } else {
+            // Normal multi-match query on several fields
+            queryBuilder = Query.of(q -> q
+                    .multiMatch(m -> m
+                            .query(query)
+                            .fields("title", "content", "category", "author", "tags") // Search across all relevant fields
+                            .type(TextQueryType.BestFields) // Use BestFields strategy correctly
+                    )
+            );
+        }
+
         SearchRequest request = SearchRequest.of(s -> s
-                .index("articles") // Your index name
-                .query(q -> q
-                        .match(m -> m
-                                .field("content")
-                                .query(FieldValue.of(query))
-                        )
-                )
+                .index("articles")
+                .query(queryBuilder)
         );
 
         return client.search(request, Article.class);
     }
 
+    /**
+     * Indexes an article document into the OpenSearch index.
+     *
+     * @param article the article to index
+     * @throws IOException if indexing fails
+     */
     public void indexArticle(Article article) throws IOException {
         IndexRequest<Article> request = new IndexRequest.Builder<Article>()
                 .index("articles")
@@ -51,7 +66,5 @@ public class OpenSearchServiceImpl implements OpenSearchService {
                 .document(article)
                 .build();
         client.index(request);
-
     }
-
 }

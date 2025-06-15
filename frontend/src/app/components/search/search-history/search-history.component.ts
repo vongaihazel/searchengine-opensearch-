@@ -11,4 +11,8 @@ import { CommonModule } from '@angular/common';
 export class SearchHistoryComponent {
   @Input() history: string[] = [];
   @Output() onSelect = new EventEmitter<string>();
+
+  selectItem(item: string): void {
+      this.onSelect.emit(item);
+    }
 }

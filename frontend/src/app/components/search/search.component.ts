@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
@@ -33,26 +34,32 @@ export class SearchComponent implements OnInit {
   results: Article[] = [];
   isHistoryVisible: boolean = false;
   isHistoryEmpty: boolean = false;
+  isLoading = false;
   userName$: Observable<string> = of('Guest');
 
-  constructor(private http: HttpClient) {}
+  currentSearchTerm: string = '';
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.getSearchHistory();
   }
 
-  isLoading = false;
-
   search(query: string): void {
+    this.currentSearchTerm = query;
+
     this.isLoading = true;
     this.isHistoryVisible = false;
-    this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query })
+
+    // If query is '*', send empty string to get all results
+    const actualQuery = query.trim() === '*' ? '' : query;
+
+    this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query: actualQuery })
       .subscribe({
         next: (response) => {
-          console.log('Full search response:', response); // For debugging
           this.results = response.openSearchResults || [];
           this.getSearchHistory();
-           this.isLoading = false;
+          this.isLoading = false;
         },
         error: (error) => {
           console.error('Error during search', error);
@@ -65,8 +72,13 @@ export class SearchComponent implements OnInit {
     this.http.get<string[]>(`${environment.apiUrl}/history/${this.userId}`)
       .subscribe({
         next: (history) => {
-          this.searchHistory = history;
-          this.isHistoryEmpty = history.length === 0;
+          const seen = new Set<string>();
+          this.searchHistory = history.reverse().filter(item => {
+            if (seen.has(item)) return false;
+            seen.add(item);
+            return true;
+          });
+          this.isHistoryEmpty = this.searchHistory.length === 0;
         },
         error: (error) => {
           console.error('Error fetching search history', error);
@@ -74,16 +86,24 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  useHistory(historyItem: string): void {
-    this.search(historyItem);
-    this.isHistoryVisible = false;
-  }
-
   toggleHistory(): void {
     this.isHistoryVisible = !this.isHistoryVisible;
     if (this.isHistoryVisible) {
-      this.getSearchHistory(); // Refresh history each time dropdown opens
+      this.getSearchHistory();
     }
   }
 
+  useHistory(query: string): void {
+    this.search(query);
+    this.isHistoryVisible = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const clickedInside = target.closest('.history-button') || target.closest('.history-dropdown');
+    if (!clickedInside) {
+      this.isHistoryVisible = false;
+    }
+  }
 }

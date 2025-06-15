@@ -1,11 +1,11 @@
 .search-container {
   width: 100%;
-  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;
-  padding: 40px 20px;
 }
 
 .engine-name {
@@ -16,14 +16,66 @@
   text-align: center;
 }
 
-.history-dropdown {
-  margin-top: 20px;
-  width: 100%;
-  max-width: 800px;
-}
-
 .loading-spinner {
   font-style: italic;
   color: #555;
   margin: 20px 0;
+}
+
+.search-bar-with-history {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.history-button {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background-color: #5c6bc0;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.history-button:hover {
+  background-color: #0c5ddf;
+}
+
+.history-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  min-width: 200px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.history-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.history-dropdown.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }

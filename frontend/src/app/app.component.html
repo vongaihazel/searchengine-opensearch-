@@ -9,19 +9,11 @@
 
   </div>
   <nav class="top-links">
-    <button (click)="toggleHistory()" class="history-button">History</button>
     <a routerLink="/sign-in" class="nav-link">Sign In</a>
     <span class="link-separator">|</span>
     <a routerLink="/create-user" class="nav-link">Create User</a>
   </nav>
 </header>
-
-<div *ngIf="isHistoryVisible" class="history-dropdown">
-  <app-search-history
-    [history]="searchHistory"
-    (onSelect)="useHistory($event)">
-  </app-search-history>
-</div>
 
 <main class="main-container">
     <router-outlet></router-outlet>
