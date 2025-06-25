@@ -64,7 +64,7 @@ public class SearchControllerTest {
         // Mock the service's saveQuery method
         when(searchHistoryServiceImpl.saveQuery(1L, "test query")).thenReturn(savedHistory);
 
-        // Create a JSON string for the SearchRequest
+        // Create a JSON string for the SearchQueryRequest
         String searchRequestJson = "{\"userId\": 1, \"query\": \"test query\"}";
 
         // Perform a POST request with the JSON body and expect HTTP 200 OK

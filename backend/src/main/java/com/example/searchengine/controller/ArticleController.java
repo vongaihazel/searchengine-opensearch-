@@ -1,17 +1,15 @@
 package com.example.searchengine.controller;
 
-import com.example.searchengine.model.Article;
+import com.example.searchengine.dto.SearchQueryRequest;
+import com.example.searchengine.dto.SearchQueryResponse;
 import com.example.searchengine.service.ArticleService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.List;
-
 /**
- * REST controller for handling API requests related to {@link Article} resources.
+ * REST controller for handling API requests related to articles.
  * <p>
- * This controller provides endpoints for adding new articles and searching existing ones
- * using OpenSearch.
+ * Provides endpoint to search articles with optional filters.
  * </p>
  */
 @RestController
@@ -19,37 +17,31 @@ import java.util.List;
 @CrossOrigin
 public class ArticleController {
 
-    private final ArticleService service;
+    private final ArticleService articleService;
 
     /**
-     * Constructor for injecting the {@link ArticleService}.
+     * Constructor for injecting the ArticleService.
      *
-     * @param service the service responsible for article operations
+     * @param articleService the service responsible for article operations
      */
-    public ArticleController(ArticleService service) {
-        this.service = service;
+    public ArticleController(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     /**
-     * Endpoint for saving a new article to OpenSearch.
+     * Endpoint for searching articles with query and optional filters.
      *
-     * @param article the article to be saved
-     * @throws IOException if an I/O error occurs while saving the article
+     * @param request the search request containing query and filters
+     * @return the search response with matching articles and total hits, or HTTP 500 if error occurs
      */
-    @PostMapping
-    public void addArticle(@RequestBody Article article) throws IOException {
-        service.saveArticle(article);
-    }
-
-    /**
-     * Endpoint for searching articles using a query string.
-     *
-     * @param query the search query
-     * @return a list of articles matching the query
-     * @throws IOException if an I/O error occurs while performing the search
-     */
-    @GetMapping("/search")
-    public List<Article> searchArticles(@RequestParam String query) throws IOException {
-        return service.search(query);
+    @PostMapping("/search")
+    public ResponseEntity<?> searchArticles(@RequestBody SearchQueryRequest request) {
+        try {
+            SearchQueryResponse response = articleService.searchArticles(request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Optionally log the exception here
+            return ResponseEntity.status(500).body("Search failed due to internal error.");
+        }
     }
 }

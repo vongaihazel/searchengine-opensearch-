@@ -24,7 +24,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
      * Performs a search operation using OpenSearch Java client.
      *
      * @param query the search term
-     * @return the SearchResponse object containing matching results
+     * @return the SearchQueryResponse object containing matching results
      * @throws Exception if the search fails
      */
     @Override

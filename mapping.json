@@ -1,0 +1,15 @@
+{
+  "mappings": {
+    "properties": {
+      "id": { "type": "keyword" },
+      "title": { "type": "text" },
+      "content": { "type": "text" },
+      "category": { "type": "keyword" },
+      "author": { "type": "keyword" },
+      "publish_date": { "type": "date" },
+      "tags": { "type": "keyword" },
+      "views": { "type": "integer" },
+      "rating": { "type": "integer" }
+    }
+  }
+}

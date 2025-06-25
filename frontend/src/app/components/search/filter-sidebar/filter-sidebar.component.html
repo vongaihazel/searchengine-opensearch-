@@ -1,0 +1,11 @@
+<div class="filter-sidebar">
+  <h3>Filters</h3>
+
+  <label>Category: <input [(ngModel)]="category" /></label>
+  <label>Author: <input [(ngModel)]="author" /></label>
+  <label>Tag: <input [(ngModel)]="tag" /></label>
+  <label>Min Views: <input type="number" [(ngModel)]="minViews" /></label>
+  <label>Min Rating: <input type="number" [(ngModel)]="minRating" min="1" max="5" /></label>
+
+  <button (click)="applyFilters()">Apply Filters</button>
+</div>

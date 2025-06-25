@@ -1,98 +1,45 @@
 package com.example.searchengine.model;
 
-/**
- * Represents an article entity used in the search engine.
- * <p>
- * This model is used for indexing and retrieving documents
- * from OpenSearch. It includes basic fields such as id, title, and content.
- * </p>
- */
+import java.util.List;
+
 public class Article {
-
-    /**
-     * The unique identifier of the article (can be null if auto-generated).
-     */
     private String id;
-
-    /**
-     * The title of the article.
-     */
     private String title;
-
-    /**
-     * The main content/body of the article.
-     */
     private String content;
+    private String category;
+    private String author;
+    private String publish_date; // or java.time.LocalDate if you add deserialization
+    private List<String> tags;
+    private int views;
+    private int rating;
 
-    /**
-     * Default constructor required for JSON deserialization and frameworks.
-     */
     public Article() {}
 
-    /**
-     * Constructs an {@code Article} with the given id, title, and content.
-     *
-     * @param id      the unique identifier of the article
-     * @param title   the title of the article
-     * @param content the content of the article
-     */
-    public Article(String id, String title, String content) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-    }
+    // getters and setters for all fields below
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    /**
-     * Returns the article ID.
-     *
-     * @return the article ID
-     */
-    public String getId() {
-        return id;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    /**
-     * Sets the article ID.
-     *
-     * @param id the article ID
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 
-    /**
-     * Returns the title of the article.
-     *
-     * @return the article title
-     */
-    public String getTitle() {
-        return title;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    /**
-     * Sets the title of the article.
-     *
-     * @param title the article title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
 
-    /**
-     * Returns the content of the article.
-     *
-     * @return the article content
-     */
-    public String getContent() {
-        return content;
-    }
+    public String getPublish_date() { return publish_date; }
+    public void setPublish_date(String publish_date) { this.publish_date = publish_date; }
 
-    /**
-     * Sets the content of the article.
-     *
-     * @param content the article content
-     */
-    public void setContent(String content) {
-        this.content = content;
-    }
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
+
+    public int getViews() { return views; }
+    public void setViews(int views) { this.views = views; }
+
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
 }

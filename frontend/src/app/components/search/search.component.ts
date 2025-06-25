@@ -13,6 +13,7 @@ export interface Article {
   id: string;
   title: string;
   content: string;
+  // Add more fields if your Article model has them
 }
 
 @Component({
@@ -29,7 +30,7 @@ export interface Article {
   ],
 })
 export class SearchComponent implements OnInit {
-  userId: number = 1;
+  userId: number = 1; // keep if your backend needs userId for history
   searchHistory: string[] = [];
   results: Article[] = [];
   isHistoryVisible: boolean = false;
@@ -39,6 +40,11 @@ export class SearchComponent implements OnInit {
 
   currentSearchTerm: string = '';
 
+  // New filter properties
+  authorFilter: string | null = null;
+  categoryFilter: string | null = null;
+  minRatingFilter: number | null = null;
+
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
@@ -47,25 +53,33 @@ export class SearchComponent implements OnInit {
 
   search(query: string): void {
     this.currentSearchTerm = query;
-
     this.isLoading = true;
     this.isHistoryVisible = false;
 
-    // If query is '*', send empty string to get all results
+    // Adjust query: send '*' as empty string for full search
     const actualQuery = query.trim() === '*' ? '' : query;
 
-    this.http.post<any>(`${environment.apiUrl}/query`, { userId: this.userId, query: actualQuery })
-      .subscribe({
-        next: (response) => {
-          this.results = response.openSearchResults || [];
-          this.getSearchHistory();
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Error during search', error);
-          this.isLoading = false;
-        }
-      });
+    const payload = {
+      query: actualQuery,
+      author: this.authorFilter ? this.authorFilter.trim() : null,
+      category: this.categoryFilter ? this.categoryFilter.trim() : null,
+      minRating: this.minRatingFilter !== null ? this.minRatingFilter : null,
+    };
+
+    this.http.post<{ articles: Article[]; totalHits: number }>(
+      `/api/articles/search`,
+      payload
+    ).subscribe({
+      next: (response) => {
+        this.results = response.articles || [];
+        this.getSearchHistory();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error during search', error);
+        this.isLoading = false;
+      }
+    });
   }
 
   getSearchHistory(): void {
@@ -96,6 +110,13 @@ export class SearchComponent implements OnInit {
   useHistory(query: string): void {
     this.search(query);
     this.isHistoryVisible = false;
+  }
+
+  clearFilters(): void {
+    this.authorFilter = null;
+    this.categoryFilter = null;
+    this.minRatingFilter = null;
+    this.search(this.currentSearchTerm);
   }
 
   @HostListener('document:click', ['$event'])

@@ -2,7 +2,7 @@ package com.example.searchengine.controller;
 
 import com.example.searchengine.dto.SearchResultResponse;
 import com.example.searchengine.entity.SearchHistory;
-import com.example.searchengine.dto.SearchRequest;
+import com.example.searchengine.dto.SearchQueryRequest;
 import com.example.searchengine.service.impl.SearchHistoryServiceImpl;
 import com.example.searchengine.service.impl.OpenSearchServiceImpl;
 import com.example.searchengine.model.Article;
@@ -41,18 +41,18 @@ public class SearchController {
     /**
      * Handles POST requests to perform a search and save the query to search history.
      *
-     * @param searchRequest the request payload containing user ID and query string
+     * @param searchQueryRequest the request payload containing user ID and query string
      * @return a response containing saved search history and matched articles,
      * or an error message in case of failure
      */
     @PostMapping("/query")
-    public ResponseEntity<?> searchAndSave(@RequestBody SearchRequest searchRequest) {
-        SearchHistory savedHistory = searchHistoryServiceImpl.saveQuery(searchRequest.getUserId(), searchRequest.getQuery());
+    public ResponseEntity<?> searchAndSave(@RequestBody SearchQueryRequest searchQueryRequest) {
+        SearchHistory savedHistory = searchHistoryServiceImpl.saveQuery(searchQueryRequest.getUserId(), searchQueryRequest.getQuery());
 
         try {
-            System.out.println("Running OpenSearch query for: " + searchRequest.getQuery());
+            System.out.println("Running OpenSearch query for: " + searchQueryRequest.getQuery());
 
-            SearchResponse<Article> searchResponse = openSearchService.search(searchRequest.getQuery());
+            SearchResponse<Article> searchResponse = openSearchService.search(searchQueryRequest.getQuery());
 
             List<Article> articles = searchResponse.hits().hits().stream()
                     .map(Hit::source)
