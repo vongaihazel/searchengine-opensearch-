@@ -1,10 +1,13 @@
 package com.example.searchengine.dto;
 
+import java.util.List;
+
 /**
  * Data Transfer Object (DTO) representing a search request made by a user.
  * <p>
  * Contains the user ID of the requester and the search query string,
- * along with optional filters like author, category, and minimum rating.
+ * along with optional filters like author, category, minimum rating,
+ * maximum rating, view counts, and tags.
  * </p>
  */
 public class SearchQueryRequest {
@@ -23,6 +26,18 @@ public class SearchQueryRequest {
 
     /** Optional filter for minimum article rating. */
     private Double minRating;
+
+    /** Optional filter for maximum article rating. */
+    private Double maxRating;
+
+    /** Optional filter for minimum article views. */
+    private Integer minViews;
+
+    /** Optional filter for maximum article views. */
+    private Integer maxViews;
+
+    /** Optional filter for article tags. */
+    private List<String> tags;
 
     // Getters and setters for all fields
 
@@ -64,5 +79,37 @@ public class SearchQueryRequest {
 
     public void setMinRating(Double minRating) {
         this.minRating = minRating;
+    }
+
+    public Double getMaxRating() {
+        return maxRating;
+    }
+
+    public void setMaxRating(Double maxRating) {
+        this.maxRating = maxRating;
+    }
+
+    public Integer getMinViews() {
+        return minViews;
+    }
+
+    public void setMinViews(Integer minViews) {
+        this.minViews = minViews;
+    }
+
+    public Integer getMaxViews() {
+        return maxViews;
+    }
+
+    public void setMaxViews(Integer maxViews) {
+        this.maxViews = maxViews;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }

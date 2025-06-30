@@ -1,11 +1,34 @@
 <div class="filter-sidebar">
-  <h3>Filters</h3>
+  <h3>Filter Results</h3>
+  <div class="filter-group">
+  <label for="author">Author:</label>
+  <select id="author" [(ngModel)]="selectedAuthor">
+    <option value="">All</option>
+    <option *ngFor="let author of authors" [value]="author">{{ author }}</option>
+  </select>
+  </div>
 
-  <label>Category: <input [(ngModel)]="category" /></label>
-  <label>Author: <input [(ngModel)]="author" /></label>
-  <label>Tag: <input [(ngModel)]="tag" /></label>
-  <label>Min Views: <input type="number" [(ngModel)]="minViews" /></label>
-  <label>Min Rating: <input type="number" [(ngModel)]="minRating" min="1" max="5" /></label>
+  <!-- Category Filter -->
 
-  <button (click)="applyFilters()">Apply Filters</button>
+  <div class="filter-group">
+  <label for="category">Category:</label>
+  <select id="category" [(ngModel)]="selectedCategory">
+    <option value="">All</option>
+    <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+  </select>
+  </div>
+
+  <!-- Min Rating Filter -->
+  <div class="filter-group">
+  <label for="minRating">Minimum Rating:</label>
+  <select id="minRating" [(ngModel)]="selectedMinRating">
+    placeholder="e.g. 3.5"
+    <option value="">Any</option>
+    <option *ngFor="let rating of [5,4,3,2,1]" [value]="rating">{{ rating }}+</option>
+  </select>
+  </div>
+  <div class="actions">
+    <button (click)="apply()">Apply</button>
+    <button (click)="clear()">Clear</button>
+  </div>
 </div>

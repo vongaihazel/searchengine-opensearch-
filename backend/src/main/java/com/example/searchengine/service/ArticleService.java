@@ -11,6 +11,9 @@ import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,43 +24,88 @@ public class ArticleService {
     @Autowired
     private OpenSearchClient openSearchClient;
 
+    private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
+
     private static final String INDEX = "articles";
 
     public SearchQueryResponse searchArticles(SearchQueryRequest request) throws IOException {
+        // ✅ Add debug log for incoming request
+        logger.info("Received search request: query='{}', author='{}', category='{}', minRating='{}', maxRating='{}', minViews='{}', maxViews='{}', tags='{}'",
+                request.getQuery(), request.getAuthor(), request.getCategory(), request.getMinRating(), request.getMaxRating(),
+                request.getMinViews(), request.getMaxViews(), request.getTags());
+
         String queryText = request.getQuery();
         String author = request.getAuthor();
         String category = request.getCategory();
         Double minRating = request.getMinRating();
+        Double maxRating = request.getMaxRating();
+        Integer minViews = request.getMinViews();
+        Integer maxViews = request.getMaxViews();
+        List<String> tags = request.getTags();
 
         BoolQuery.Builder boolQuery = new BoolQuery.Builder();
 
-        if (queryText != null && !queryText.isEmpty()) {
+        // Full-text search on title and content
+        if (queryText != null && !queryText.isBlank()) {
             boolQuery.must(m -> m.multiMatch(mm -> mm
                     .fields("title", "content")
                     .query(queryText)
             ));
+            logger.debug("Added multiMatch for query text: {}", queryText);
         }
 
-        if (author != null && !author.isEmpty()) {
-            boolQuery.filter(f -> f.term(t -> t.field("author.keyword").value(FieldValue.of(author))));
+        // Filter by author.keyword
+        if (author != null && !author.isBlank()) {
+            boolQuery.filter(f -> f.term(t -> t.field("author").value(FieldValue.of(author))));
+            logger.debug("Added filter for author: {}", author);
         }
 
-        if (category != null && !category.isEmpty()) {
-            boolQuery.filter(f -> f.term(t -> t.field("category.keyword").value(FieldValue.of(category))));
+        // Filter by category.keyword
+        if (category != null && !category.isBlank()) {
+            boolQuery.filter(f -> f.term(t -> t.field("category").value(FieldValue.of(category))));
+            logger.debug("Added filter for category: {}", category);
         }
 
-        if (minRating != null) {
-            boolQuery.filter(f -> f.range(r -> r.field("rating").gte(JsonData.of(minRating))));
+        // Filter by tags (terms query)
+        if (tags != null && !tags.isEmpty()) {
+            boolQuery.filter(f -> f.terms(t -> t
+                    .field("tags.keyword") // assuming tags have keyword subfield, if not, use "tags"
+                    .terms(terms -> terms.value(tags.stream().map(FieldValue::of).toList()))
+            ));
+            logger.debug("Added filter for tags: {}", tags);
         }
 
+        // Range filter for views
+        if (minViews != null || maxViews != null) {
+            boolQuery.filter(f -> f.range(r -> {
+                r.field("views");
+                if (minViews != null) r.gte(JsonData.of(minViews));
+                if (maxViews != null) r.lte(JsonData.of(maxViews));
+                return r;
+            }));
+            logger.debug("Added range filter for views: minViews={}, maxViews={}", minViews, maxViews);
+        }
 
-        // Use fully qualified OpenSearch SearchRequest here
+        // Range filter for rating (min and max)
+        if (minRating != null || maxRating != null) {
+            boolQuery.filter(f -> f.range(r -> {
+                r.field("rating");
+                if (minRating != null) r.gte(JsonData.of(minRating));
+                if (maxRating != null) r.lte(JsonData.of(maxRating));
+                return r;
+            }));
+            logger.debug("Added range filter for rating: minRating={}, maxRating={}", minRating, maxRating);
+        }
+
+        // Build the search request
         org.opensearch.client.opensearch.core.SearchRequest searchRequest = org.opensearch.client.opensearch.core.SearchRequest.of(s -> s
                 .index(INDEX)
                 .query(q -> q.bool(boolQuery.build()))
         );
 
-        // Use fully qualified OpenSearch SearchResponse here
+        logger.debug("Built search request: {}", searchRequest);
+
+        // Perform search
         org.opensearch.client.opensearch.core.SearchResponse<Article> searchResponse = openSearchClient.search(searchRequest, Article.class);
 
         List<Article> articles = searchResponse.hits().hits().stream()
@@ -66,7 +114,8 @@ public class ArticleService {
 
         long totalHits = searchResponse.hits().total().value();
 
-        // Return your own DTO SearchQueryResponse (not the client one)
+        logger.info("Search returned {} total hits, {} articles fetched.", totalHits, articles.size());
+
         return new SearchQueryResponse(articles, totalHits);
     }
 }

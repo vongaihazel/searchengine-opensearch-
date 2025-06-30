@@ -18,8 +18,22 @@
 
   <div *ngIf="isLoading" class="loading-spinner">Searching...</div>
 
-  <app-search-results
-    [results]="results"
-    [searchTerm]="currentSearchTerm">
-  </app-search-results>
+  <div class="search-header" *ngIf="results.length > 0">
+    <button class="filter-button" (click)="toggleSidebar()">Filter</button>
+  </div>
+
+  <app-filter-sidebar
+    *ngIf="isSidebarVisible"
+    class="sidebar open"
+    [authors]="authors"
+    [categories]="categories"
+    (filterChange)="applyFilters($event)">
+  </app-filter-sidebar>
+
+  <div class="main-content" [class.sidebar-open]="isSidebarVisible">
+    <app-search-results
+      [results]="filteredResults.length ? filteredResults : results"
+      [searchTerm]="currentSearchTerm">
+    </app-search-results>
+  </div>
 </div>
