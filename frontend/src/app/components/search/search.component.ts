@@ -43,6 +43,7 @@ export class SearchComponent implements OnInit {
   filteredResults: Article[] = [];
   isSidebarVisible = false;
   isSidebarOpen = false;
+  isAISidebarVisible = false;
   authors: string[] = [];
   categories: string[] = [];
   isHistoryVisible: boolean = false;
@@ -55,6 +56,9 @@ export class SearchComponent implements OnInit {
   authorFilter?: string;
   categoryFilter?: string;
   minRatingFilter?: number;
+
+  aiPrompt: string = '';
+  aiResponse: string | null = null;
 
    toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible;
@@ -125,6 +129,29 @@ export class SearchComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
+  }
+
+  generateAICompletion(): void {
+    if (!this.aiPrompt.trim()) {
+      alert('Please enter a prompt!');
+      return;
+    }
+
+    const payload = { prompt: this.aiPrompt };
+
+    this.http.post<{ choices: { message: { content: string } }[] }>(
+      `/api/ai/complete`,
+      payload
+    ).subscribe({
+      next: (response) => {
+        this.aiResponse = response.choices?.[0]?.message?.content || 'No response received.';
+      },
+      error: (error) => {
+        console.error('Error generating AI completion:', error);
+        this.aiResponse = 'Error generating AI completion.';
+      }
+    });
   }
 
   getSearchHistory(): void {
@@ -152,6 +179,16 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  toggleAISidebar() {
+    this.isAISidebarVisible = !this.isAISidebarVisible;
+
+    // Optional: Close the filter sidebar if both shouldn't be open at once
+    if (this.isAISidebarVisible) {
+      this.isSidebarVisible = false;
+    }
+  }
+
+
   useHistory(query: string): void {
     this.search(query);
     this.isHistoryVisible = false;
@@ -169,17 +206,23 @@ export class SearchComponent implements OnInit {
   onClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLElement;
 
-    // Handle history dropdown
+    // History dropdown
     const clickedInsideHistory = target.closest('.history-button') || target.closest('.history-dropdown');
+
+    // Filter sidebar
+    const clickedInsideSidebar = target.closest('.sidebar') || target.closest('.filter-button');
+
+    // AI sidebar
+    const clickedInsideAISidebar = target.closest('.ai-sidebar') || target.closest('.ai-button');
+
     if (!clickedInsideHistory) {
       this.isHistoryVisible = false;
     }
 
-    // Handle sidebar
-    const clickedInsideSidebar = target.closest('.sidebar') || target.closest('.filter-button');
-    if (!clickedInsideSidebar) {
+    if (!clickedInsideSidebar && !clickedInsideAISidebar) {
       this.isSidebarVisible = false;
       this.isSidebarOpen = false;
+      this.isAISidebarVisible = false;
     }
   }
 

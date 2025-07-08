@@ -6,7 +6,6 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-
 }
 
 .engine-name {
@@ -34,7 +33,8 @@
   gap: 10px;
 }
 
-.history-button {
+.history-button,
+.ai-button {   /* Make AI button styles identical to history button */
   flex: 1;
   padding: 12px 20px;
   border-radius: 999px;
@@ -48,7 +48,8 @@
   transition: background-color 0.2s ease;
 }
 
-.history-button:hover {
+.history-button:hover,
+.ai-button:hover {
   background-color: #0c5ddf;
 }
 
@@ -112,10 +113,9 @@
   margin-right: 0;
 }
 
-
 .filter-button {
   display: inline-block;
-  background-color: #1a73e8;   // same blue as your branding
+  background-color: #1a73e8;   /* same blue as your branding */
   color: #fff;
   border: none;
   border-radius: 999px;
@@ -125,9 +125,84 @@
   font-weight: 500;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #0c5ddf;
-  }
 }
 
+.filter-button:hover {
+  background-color: #0c5ddf;
+}
+
+/* === AI Sidebar === */
+
+.ai-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background: #fafafa;
+  border-left: 1px solid #ddd;
+  padding: 1rem;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.ai-sidebar h2 {
+  font-weight: bold;
+  color: #1a73e8;
+  font-family: inherit;
+  margin-top: 10;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.ai-textarea {
+  flex: 1;
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 18px;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 20px;
+}
+
+.ai-generate-button {
+  display: inline-block;
+  background-color: #1a73e8; color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+}
+
+.ai-generate-button:hover {
+  background-color: #005fa3;
+}
+
+.ai-response h3 {
+  font-weight: bold;
+  color: #1a73e8;
+  font-family: inherit;
+  margin-top: 10;
+  margin-bottom: 20px;
+}
+
+.ai-response pre {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  width: 100%;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-size: 18px;
+  font-family: inherit;
+}

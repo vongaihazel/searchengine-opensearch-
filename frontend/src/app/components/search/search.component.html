@@ -14,6 +14,10 @@
         </app-search-history>
       </div>
     </div>
+
+    <div class="ai-wrapper">
+      <button (click)="toggleAISidebar()" class="ai-button">AI Assistant</button>
+    </div>
   </div>
 
   <div *ngIf="isLoading" class="loading-spinner">Searching...</div>
@@ -22,6 +26,7 @@
     <button class="filter-button" (click)="toggleSidebar()">Filter</button>
   </div>
 
+
   <app-filter-sidebar
     *ngIf="isSidebarVisible"
     class="sidebar open"
@@ -29,6 +34,26 @@
     [categories]="categories"
     (filterChange)="applyFilters($event)">
   </app-filter-sidebar>
+
+  <div *ngIf="isAISidebarVisible" class="sidebar ai-sidebar open">
+    <h2>Ask AI Assistant</h2>
+
+    <textarea
+      [(ngModel)]="aiPrompt"
+      placeholder="Type your prompt here..."
+      rows="2"
+      class="ai-textarea">
+    </textarea>
+
+    <button (click)="generateAICompletion()" class="ai-generate-button">
+      Generate
+    </button>
+
+    <div *ngIf="aiResponse" class="ai-response">
+      <h3>AI Response:</h3>
+      <pre>{{ aiResponse }}</pre>
+    </div>
+  </div>
 
   <div class="main-content" [class.sidebar-open]="isSidebarVisible">
     <app-search-results
