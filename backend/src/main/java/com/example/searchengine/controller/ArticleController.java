@@ -2,6 +2,7 @@ package com.example.searchengine.controller;
 
 import com.example.searchengine.dto.SearchQueryRequest;
 import com.example.searchengine.dto.SearchQueryResponse;
+import com.example.searchengine.dto.VectorSearchRequest;
 import com.example.searchengine.service.ArticleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,4 +45,16 @@ public class ArticleController {
             return ResponseEntity.status(500).body("Search failed due to internal error.");
         }
     }
+
+    @PostMapping("/vector-search")
+    public ResponseEntity<?> vectorSearch(@RequestBody VectorSearchRequest request) {
+        try {
+            SearchQueryResponse response = articleService.searchByVector(request.getEmbedding(), request.getK());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();  // print full error to console/log
+            return ResponseEntity.status(500).body("Vector search failed: " + e.getMessage());
+        }
+    }
+
 }

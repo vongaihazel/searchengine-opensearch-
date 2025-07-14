@@ -100,6 +100,7 @@
 			<version>2.11.0</version>
 		</dependency>
 
+
 		<!-- Jackson for object-JSON mapping -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

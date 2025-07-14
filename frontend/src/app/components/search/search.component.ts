@@ -9,6 +9,7 @@ import { SearchInputComponent } from './search-input/search-input.component';
 import { SearchHistoryComponent } from './search-history/search-history.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import { FilterSidebarComponent } from './filter-sidebar/filter-sidebar.component';
+import { KnnSearchService, KnnSearchRequest } from '../../services/knn-search.service';
 
 export interface Article {
   id: string;
@@ -49,6 +50,7 @@ export class SearchComponent implements OnInit {
   isHistoryVisible: boolean = false;
   isHistoryEmpty: boolean = false;
   isLoading = false;
+
   userName$: Observable<string> = of('Guest');
 
   currentSearchTerm: string = '';
@@ -87,7 +89,7 @@ export class SearchComponent implements OnInit {
     }
 
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private knnSearchService: KnnSearchService) {}
 
   ngOnInit(): void {
     this.getSearchHistory();
@@ -95,8 +97,69 @@ export class SearchComponent implements OnInit {
     this.loadCategories();
   }
 
+  knnSearch(query: string): void {
+      this.currentSearchTerm = query;
+      this.isLoading = true;
+      this.isHistoryVisible = false;
+
+      if (!query.trim()) {
+        this.results = [];
+        this.isLoading = false;
+        return;
+      }
+
+      const request: KnnSearchRequest = {
+        query: query,
+        k: 10,  // number of nearest neighbors to fetch
+      };
+
+      this.knnSearchService.knnSearch(request).subscribe({
+        next: (response) => {
+          // Backend returns SearchResponse as JSON string; parse or adjust as needed
+          // Example assuming response is JSON string:
+          let body;
+          try {
+            body = typeof response === 'string' ? JSON.parse(response) : response;
+          } catch {
+            body = response;
+          }
+
+          // Extract articles from OpenSearch hits
+          // This depends on your backend response format - adapt accordingly
+          const hits = body.hits?.hits || [];
+          this.results = hits.map((hit: any) => {
+            const source = hit._source || {};
+            return {
+              id: hit._id || '',
+              title: source.title || '',
+              content: source.content || '',
+              author: source.author,
+              category: source.category,
+              publish_date: source.publish_date,
+              tags: source.tags,
+              views: source.views,
+              rating: source.rating
+            } as Article;
+          });
+
+          this.filteredResults = this.results;
+          this.authors = [...new Set(this.results.map(r => r.author).filter((a): a is string => !!a))];
+          this.categories = [...new Set(this.results.map(r => r.category).filter((c): c is string => !!c))];
+          this.getSearchHistory();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error during semantic search', error);
+          this.isLoading = false;
+        }
+      });
+    }
+
   search(query: string): void {
     this.currentSearchTerm = query;
+
+    this.knnSearch(query);
+
     this.isLoading = true;
     this.isHistoryVisible = false;
 
@@ -131,6 +194,9 @@ export class SearchComponent implements OnInit {
     });
 
   }
+
+
+
 
   generateAICompletion(): void {
     if (!this.aiPrompt.trim()) {

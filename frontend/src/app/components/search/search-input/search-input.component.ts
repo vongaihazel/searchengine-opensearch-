@@ -14,7 +14,11 @@ export class SearchInputComponent implements AfterViewInit {
   @Output() onSearch = new EventEmitter<string>();
   @ViewChild('searchBox') searchBox!: ElementRef;
 
-  emitSearch() {
+  emitSearch(event?: Event) {
+    console.log('SearchInputComponent emitSearch:', this.query);
+    if (event) {
+      event.preventDefault();
+    }
     this.onSearch.emit(this.query);
   }
 

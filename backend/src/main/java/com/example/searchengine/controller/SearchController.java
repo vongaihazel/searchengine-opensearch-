@@ -1,17 +1,23 @@
 package com.example.searchengine.controller;
 
+import com.example.searchengine.dto.SearchQueryResponse;
 import com.example.searchengine.dto.SearchResultResponse;
 import com.example.searchengine.entity.SearchHistory;
 import com.example.searchengine.dto.SearchQueryRequest;
 import com.example.searchengine.service.impl.SearchHistoryServiceImpl;
 import com.example.searchengine.service.impl.OpenSearchServiceImpl;
 import com.example.searchengine.model.Article;
+import com.example.searchengine.service.EmbeddingService;
+import com.example.searchengine.service.ArticleService;
+
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,17 +31,25 @@ public class SearchController {
 
     private final SearchHistoryServiceImpl searchHistoryServiceImpl;
     private final OpenSearchServiceImpl openSearchService;
+    private final EmbeddingService embeddingService;
+    private final ArticleService articleSearchService;
 
     /**
      * Constructor for injecting required services.
      *
      * @param searchHistoryServiceImpl the service for handling search history operations
      * @param openSearchService        the service for interacting with OpenSearch
+     * @param embeddingService         the service for generating embeddings
+     * @param articleService     the service for k-NN vector search
      */
     public SearchController(SearchHistoryServiceImpl searchHistoryServiceImpl,
-                            OpenSearchServiceImpl openSearchService) {
+                            OpenSearchServiceImpl openSearchService,
+                            EmbeddingService embeddingService,
+                            ArticleService articleService) {
         this.searchHistoryServiceImpl = searchHistoryServiceImpl;
         this.openSearchService = openSearchService;
+        this.embeddingService = embeddingService;
+        this.articleSearchService = articleService;
     }
 
     /**
@@ -117,4 +131,31 @@ public class SearchController {
     public ResponseEntity<String> home() {
         return ResponseEntity.ok("Welcome to the Search Engine API!");
     }
+
+    /**
+     * Handles POST requests to perform a semantic k-NN search using vector embeddings.
+     *
+     * @param request a JSON object containing the "query" and optional "k"
+     * @return a response with the OpenSearch k-NN search results
+     */
+    @PostMapping("/knn")
+    public ResponseEntity<?> knnSearch(@RequestBody Map<String, Object> request) {
+        try {
+            String query = (String) request.get("query");
+            int k = (int) request.getOrDefault("k", 5);
+
+            System.out.println("Generating embedding for: " + query);
+            List<Float> embedding = embeddingService.getEmbedding(query);
+
+            System.out.println("Running k-NN vector search...");
+            SearchQueryResponse knnResponse = articleSearchService.searchByVector(embedding, k);
+
+            return ResponseEntity.ok(knnResponse);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("k-NN search failed: " + e.getMessage());
+        }
+    }
+
 }

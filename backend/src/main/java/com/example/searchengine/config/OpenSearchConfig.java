@@ -47,6 +47,17 @@ public class OpenSearchConfig {
      */
     @Bean
     public OpenSearchClient openSearchClient() {
+        return new OpenSearchClient(new RestClientTransport(restClient(), new JacksonJsonpMapper()));
+    }
+
+    /**
+     * Creates and configures the low-level {@link RestClient} bean.
+     * Needed for raw JSON requests.
+     *
+     * @return the configured {@link RestClient}
+     */
+    @Bean
+    public RestClient restClient() {
         try {
             // Trust all certificates (NOT for production use)
             TrustManager[] trustAllCerts = new TrustManager[]{
@@ -68,12 +79,10 @@ public class OpenSearchConfig {
                     }
             };
 
-            // Set up a permissive SSL context (dev only)
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-            // Configure the low-level REST client
-            RestClient restClient = RestClient.builder(
+            return RestClient.builder(
                             new HttpHost(config.getHost(), config.getPort(), "https"))
                     .setDefaultHeaders(new Header[]{
                             new BasicHeader("Authorization",
@@ -89,15 +98,8 @@ public class OpenSearchConfig {
                     )
                     .build();
 
-            // Use Jackson for JSON mapping
-            JsonpMapper mapper = new JacksonJsonpMapper();
-            RestClientTransport transport = new RestClientTransport(restClient, mapper);
-
-            // Create and return the OpenSearch client
-            return new OpenSearchClient(transport);
-
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create OpenSearch client", e);
+            throw new RuntimeException("Failed to create RestClient", e);
         }
     }
 }
